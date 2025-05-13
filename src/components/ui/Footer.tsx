@@ -25,25 +25,25 @@ export function Footer({
       background: "bg-white",
       text: "text-gray-600",
       heading: "text-gray-900",
-      border: "border-silver-200",
-      hover: "hover:text-ukblue",
-      divider: "silver-50"
+      border: "border-brand-gray-200",
+      hover: "hover:text-darkblue",
+      divider: "lightgray"
     },
     minimal: {
-      background: "bg-silver-50",
+      background: "bg-lightgray",
       text: "text-gray-600",
       heading: "text-gray-900",
-      border: "border-silver-200",
-      hover: "hover:text-ukblue",
+      border: "border-brand-gray-200",
+      hover: "hover:text-darkblue",
       divider: "white"
     },
     dark: {
-      background: "bg-ukblue",
-      text: "text-silver-300",
+      background: "bg-darkblue",
+      text: "text-lightgray",
       heading: "text-white",
-      border: "border-ukblue-800",
-      hover: "hover:text-gold-400",
-      divider: "ukblue"
+      border: "border-brand-blue-800",
+      hover: "hover:text-gold",
+      divider: "darkblue"
     }
   };
   
@@ -53,7 +53,7 @@ export function Footer({
     <footer className={`${styles.background} ${className}`}>
       {variant !== "minimal" && showNewsletter && (
         <>
-          <div className="border-b border-silver-200">
+          <div className="border-b border-brand-gray-200">
             <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
@@ -69,11 +69,11 @@ export function Footer({
                     <input
                       type="email"
                       placeholder="Your email address"
-                      className="flex-grow px-4 py-2 rounded-md border border-silver-300 focus:outline-none focus:ring-2 focus:ring-ukblue/20"
+                      className="flex-grow px-4 py-2 rounded-md border border-brand-gray-300 focus:outline-none focus:ring-2 focus:ring-darkblue/20"
                     />
                     <button
                       type="submit"
-                      className="bg-ukblue text-white px-5 py-2 rounded-md font-medium hover:bg-ukblue/90 transition duration-300"
+                      className="bg-darkblue text-white px-5 py-2 rounded-md font-medium hover:bg-brand-blue-600 transition duration-300"
                     >
                       Subscribe
                     </button>
@@ -92,14 +92,14 @@ export function Footer({
             <Link href="/" className="inline-block mb-6">
               {variant === "dark" ? (
                 <Image 
-                  src="https://placehold.co/200x80/ffffff/00247d?text=Royal+Academy" 
+                  src="https://placehold.co/200x80/ffffff/012169?text=Royal+Academy" 
                   alt="Royal Academy UK" 
                   width={200} 
                   height={80} 
                 />
               ) : (
                 <Image 
-                  src="https://placehold.co/200x80/00247d/ffffff?text=Royal+Academy" 
+                  src="https://placehold.co/200x80/012169/ffffff?text=Royal+Academy" 
                   alt="Royal Academy UK" 
                   width={200} 
                   height={80} 
@@ -205,22 +205,25 @@ export function Footer({
       </div>
       
       {/* Bottom Bar */}
-      <div className={`border-t ${styles.border}`}>
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+      <div className={`border-t ${styles.border} py-8`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center">
             <div className={`${styles.text} text-sm mb-4 md:mb-0`}>
               © {year} Royal Academy UK. All rights reserved.
             </div>
             <div className="flex flex-wrap gap-4 text-sm">
-              {bottomLinks.map((link, index) => (
-                <Link
-                  key={index}
-                  href={link.href}
-                  className={`${styles.text} ${styles.hover} transition duration-300`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              <Link href="/privacy-policy" className={`${styles.text} ${styles.hover}`}>
+                Privacy Policy
+              </Link>
+              <Link href="/terms-of-service" className={`${styles.text} ${styles.hover}`}>
+                Terms of Service
+              </Link>
+              <Link href="/accessibility" className={`${styles.text} ${styles.hover}`}>
+                Accessibility
+              </Link>
+              <Link href="/sitemap" className={`${styles.text} ${styles.hover}`}>
+                Sitemap
+              </Link>
             </div>
           </div>
         </div>
@@ -239,18 +242,13 @@ function SocialIcon({
   variant: "standard" | "minimal" | "dark"; 
   href: string;
 }) {
-  const bgColor = variant === "dark" 
-    ? "bg-white/10 hover:bg-white/20" 
-    : "bg-ukblue/10 hover:bg-ukblue/20";
-  
-  const textColor = variant === "dark"
-    ? "text-white"
-    : "text-ukblue";
+  const bgColor = variant === "dark" ? "bg-brand-blue-800 hover:bg-brand-blue-700" : "bg-brand-gray-100 hover:bg-brand-gray-200";
+  const textColor = variant === "dark" ? "text-white" : "text-darkblue";
   
   return (
-    <a
+    <a 
       href={href}
-      className={`${bgColor} ${textColor} h-8 w-8 rounded-full flex items-center justify-center transition duration-300`}
+      className={`${bgColor} ${textColor} w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300`}
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -261,32 +259,25 @@ function SocialIcon({
 
 // Navigation link data
 const quickLinks = [
-  { label: "About Us", href: "/about" },
-  { label: "Admissions", href: "/admissions" },
-  { label: "Academic Programs", href: "/programs" },
-  { label: "Research", href: "/research" },
-  { label: "News & Events", href: "/news" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about" },
+  { label: "Courses", href: "/courses" },
+  { label: "News & Events", href: "/news-events" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const academicLinks = [
-  { label: "Undergraduate", href: "/undergraduate" },
-  { label: "Graduate", href: "/graduate" },
+  { label: "Programs", href: "/programs" },
   { label: "Faculties", href: "/faculties" },
-  { label: "Libraries", href: "/libraries" },
+  { label: "Research", href: "/research" },
+  { label: "Library", href: "/library" },
   { label: "Academic Calendar", href: "/calendar" },
 ];
 
 const studentLinks = [
-  { label: "Campus Life", href: "/student-life" },
-  { label: "Accommodation", href: "/accommodation" },
-  { label: "Student Support", href: "/support" },
-  { label: "International Students", href: "/international" },
-  { label: "Careers", href: "/careers" },
-];
-
-const bottomLinks = [
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms of Service", href: "/terms" },
-  { label: "Accessibility", href: "/accessibility" },
-  { label: "Sitemap", href: "/sitemap" },
+  { label: "Student Life", href: "/student-life" },
+  { label: "Housing", href: "/housing" },
+  { label: "Campus Activities", href: "/activities" },
+  { label: "Career Services", href: "/careers" },
+  { label: "Support Services", href: "/support" },
 ]; 

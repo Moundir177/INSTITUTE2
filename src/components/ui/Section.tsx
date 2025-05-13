@@ -1,163 +1,101 @@
 "use client";
 
-import React from "react";
-import { twMerge } from "tailwind-merge";
-import clsx from "clsx";
-import { motion } from "framer-motion";
-import { FloatingElements } from "./FloatingElements";
+import React, { ReactNode } from 'react';
+import { motion } from 'framer-motion';
+import { useTheme } from '@/context/ThemeContext';
 
 interface SectionProps {
-  children: React.ReactNode;
+  children: ReactNode;
   title?: string;
   subtitle?: string;
-  className?: string;
-  containerClassName?: string;
-  titleClassName?: string;
-  subtitleClassName?: string;
-  contentClassName?: string;
-  background?: "white" | "light" | "dark" | "primary" | "gradient" | "gray" | "ukblue" | "gold" | "silver-50";
-  fullWidth?: boolean;
-  id?: string;
-  container?: boolean;
+  background?: 'light' | 'dark' | 'gradient' | 'white';
   pattern?: boolean;
-  animate?: boolean;
-  padding?: "none" | "sm" | "md" | "lg";
+  className?: string;
+  id?: string;
 }
 
-export function Section({
+export const Section: React.FC<SectionProps> = ({
   children,
   title,
   subtitle,
-  className,
-  containerClassName,
-  titleClassName,
-  subtitleClassName,
-  contentClassName,
-  background = "white",
-  fullWidth = false,
-  id,
-  container = true,
+  background = 'white',
   pattern = false,
-  animate = false,
-  padding = "md",
-}: SectionProps) {
-  const backgroundClasses = {
-    white: "bg-white",
-    light: "bg-silver-50",
-    dark: "bg-ukblue text-white",
-    primary: "bg-ukblue/95 text-white",
-    gradient: "bg-gradient-to-br from-ukblue via-ukblue/90 to-ukred/80 text-white",
-    gray: "bg-silver-100",
-    ukblue: "bg-ukblue text-white",
-    gold: "bg-gold-500 text-white",
-    "silver-50": "bg-silver-50",
-  };
-
-  const paddingClasses = {
-    none: "",
-    sm: "py-8 md:py-12",
-    md: "py-12 md:py-16",
-    lg: "py-16 md:py-24",
-  };
-
-  const sectionVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { 
-        duration: 0.6,
-        when: "beforeChildren",
-        staggerChildren: 0.2
-      }
+  className = '',
+  id,
+}) => {
+  const { isRTL } = useTheme();
+  
+  const getBackgroundClasses = () => {
+    switch (background) {
+      case 'light':
+        return 'bg-brand-blue-50 dark:bg-dark-card';
+      case 'dark':
+        return 'bg-darkblue text-white dark:bg-dark-background';
+      case 'gradient':
+        return 'bg-gradient-to-r from-darkblue to-brand-blue-600 text-white dark:from-dark-primary dark:to-darkblue';
+      default:
+        return 'bg-white dark:bg-dark-background';
     }
   };
-
-  const childVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.5 }
-    }
-  };
-
-  const sectionClasses = twMerge(
-    clsx(
-      "relative overflow-hidden",
-      backgroundClasses[background],
-      paddingClasses[padding],
-      className
-    )
-  );
-
-  const containerClasses = twMerge(
-    clsx(fullWidth ? "w-full" : "container-custom", containerClassName)
-  );
-
-  const titleClasses = twMerge(
-    clsx(
-      "text-3xl font-bold mb-4 text-center",
-      background === "dark" || background === "primary" || background === "gradient" ? "text-white" : "text-gray-900", 
-      titleClassName
-    )
-  );
-
-  const subtitleClasses = twMerge(
-    clsx(
-      "text-lg mb-10 text-center max-w-3xl mx-auto",
-      background === "dark" ? "text-silver-300" : 
-      background === "primary" ? "text-silver-200" : "text-gray-600",
-      subtitleClassName
-    )
-  );
-
-  const contentClasses = twMerge(clsx(contentClassName));
-
-  const content = container ? (
-    <div className={containerClasses}>
-      {title && <h2 className={titleClasses}>{title}</h2>}
-      {subtitle && <p className={subtitleClasses}>{subtitle}</p>}
-      <div className={contentClasses}>
-        {animate ? (
-          <motion.div
-            variants={childVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-          >
-            {children}
-          </motion.div>
-        ) : (
-          children
-        )}
-      </div>
-    </div>
-  ) : (
-    animate ? (
-      <motion.div
-        variants={childVariants}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-      >
-        {children}
-      </motion.div>
-    ) : (
-      children
-    )
-  );
-
+  
   return (
-    <motion.section
+    <section 
       id={id}
-      className={sectionClasses}
-      variants={animate ? sectionVariants : undefined}
-      initial={animate ? "hidden" : undefined}
-      whileInView={animate ? "visible" : undefined}
-      viewport={{ once: true, margin: "-100px" }}
+      className={`py-16 md:py-20 relative overflow-hidden ${getBackgroundClasses()} ${className}`}
     >
-      {pattern && <FloatingElements variant={background === "dark" || background === "primary" || background === "gradient" ? "royal" : "default"} />}
-      {content}
-    </motion.section>
+      {/* Optional Pattern Background */}
+      {pattern && (
+        <div 
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage: 'url("/images/pattern.svg")',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '100px 100px',
+          }}
+        />
+      )}
+      
+      <div className="container-custom relative z-10">
+        {/* Section Header */}
+        {(title || subtitle) && (
+          <div className="mb-12 text-center">
+            {title && (
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className={`text-3xl md:text-4xl font-bold mb-4 ${
+                  background === 'dark' || background === 'gradient' ? 'text-white' : 'text-gray-800 dark:text-dark-text-primary'
+                } ${isRTL ? 'rtl' : ''}`}
+              >
+                {title}
+              </motion.h2>
+            )}
+            
+            {subtitle && (
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className={`text-xl max-w-3xl mx-auto ${
+                  background === 'dark' || background === 'gradient' 
+                    ? 'text-white/80' 
+                    : 'text-gray-600 dark:text-dark-text-secondary'
+                } ${isRTL ? 'rtl' : ''}`}
+              >
+                {subtitle}
+              </motion.p>
+            )}
+          </div>
+        )}
+        
+        {/* Section Content */}
+        <div className={isRTL ? 'rtl' : ''}>
+          {children}
+        </div>
+      </div>
+    </section>
   );
-} 
+}; 

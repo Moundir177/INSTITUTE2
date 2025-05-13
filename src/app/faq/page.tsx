@@ -1,285 +1,527 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Section } from "@/components/ui/Section";
-import { Button } from "@/components/ui/Button";
-import { FaChevronDown, FaChevronUp, FaSearch, FaGraduationCap, FaCreditCard, FaGlobeAmericas, FaUserGraduate, FaCalendarAlt, FaQuestion } from "react-icons/fa";
+import React, { useState, useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import Image from 'next/image';
+import { useTranslation } from '@/hooks/useTranslation';
+import { Section } from '@/components/ui/Section';
+import { Button } from '@/components/ui/Button';
+import { ShinyText } from '@/components/ui/ShinyText';
+import { FloatingElements } from '@/components/ui/FloatingElements';
+import { ParallaxBackground } from '@/components/ui/ParallaxBackground';
+import { 
+  ChevronDown, ChevronUp, Search, 
+  BookOpen, GraduationCap, Home, Globe, CreditCard, Users 
+} from 'lucide-react';
+import { useAnimationConfig } from '@/hooks/useAnimationConfig';
+import { FaArrowRight, FaCheck, FaGraduationCap, FaQuestionCircle, FaUniversity } from 'react-icons/fa';
 
-// FAQ Interface
 interface FAQItem {
-  id: string;
   question: string;
   answer: string;
   category: string;
 }
 
 export default function FAQPage() {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [openItems, setOpenItems] = useState<string[]>([]);
+  const { t, isRTL } = useTranslation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const { shouldReduceMotion, fadeInVariants, getScrollBehavior } = useAnimationConfig();
   
-  // Toggle FAQ item
-  const toggleItem = (id: string) => {
-    if (openItems.includes(id)) {
-      setOpenItems(openItems.filter(item => item !== id));
-    } else {
-      setOpenItems([...openItems, id]);
+  const featuredRef = useRef(null);
+  const isFeaturedInView = useInView(featuredRef, { once: true, amount: 0.2 });
+
+  // FAQ categories with icons
+  const categories = [
+    { id: 'all', name: 'All Questions', icon: <FaQuestionCircle /> },
+    { id: 'admissions', name: 'Admissions', icon: <GraduationCap /> },
+    { id: 'courses', name: 'Courses & Programs', icon: <BookOpen /> },
+    { id: 'fees', name: 'Fees & Funding', icon: <CreditCard /> },
+    { id: 'accommodation', name: 'Accommodation', icon: <Home /> },
+    { id: 'international', name: 'International Students', icon: <Globe /> },
+  ];
+
+  // FAQ data
+  const faqItems: FAQItem[] = [
+    {
+      question: 'What are the entry requirements for undergraduate programs?',
+      answer: 'Entry requirements vary by program, but generally include completed secondary education with good grades, English language proficiency (IELTS 6.5 or equivalent), and sometimes program-specific requirements such as portfolio or interview. For detailed requirements, please check the specific course page or contact our admissions team.',
+      category: 'admissions'
+    },
+    {
+      question: 'How do I apply for a scholarship?',
+      answer: 'Scholarship applications are typically submitted alongside your program application. Visit our Scholarships page to view available options, eligibility criteria, and application deadlines. Most scholarships require academic excellence, and some may have additional requirements such as leadership experience or financial need assessment.',
+      category: 'fees'
+    },
+    {
+      question: 'Can I transfer credits from another university?',
+      answer: 'Yes, we accept transfer credits from accredited institutions. The number of credits that can be transferred depends on the similarity of the courses to our curriculum and your academic performance. Submit official transcripts and course descriptions to our admissions team for evaluation.',
+      category: 'admissions'
+    },
+    {
+      question: 'How long does it take to complete a master\'s program?',
+      answer: 'Most master\'s programs at Greenwich take 1-2 years to complete when studied full-time. Part-time options typically take 2-3 years. Some specialized programs may have different durations. Check the specific program page for detailed information.',
+      category: 'courses'
+    },
+    {
+      question: 'Are there payment plans available for tuition fees?',
+      answer: 'Yes, we offer various payment plans to help make education more accessible. Options include installment plans (typically 2-3 payments per academic year), monthly payment plans, and employer sponsorship arrangements. Contact our finance office to discuss the options available to you.',
+      category: 'fees'
+    },
+    {
+      question: 'What accommodation options are available for students?',
+      answer: 'We offer several accommodation options including on-campus residence halls, university-managed apartments, and assistance with finding private rentals. On-campus housing is guaranteed for first-year undergraduate students who apply by the priority deadline. Graduate students typically live in our apartment complexes or off-campus housing.',
+      category: 'accommodation'
+    },
+    {
+      question: 'Is there support for international students with visa applications?',
+      answer: 'Yes, our International Student Services office provides comprehensive support with visa applications, including documentation guidance, visa interview preparation, and assistance throughout the process. Once accepted, you\'ll receive detailed instructions and personalized support from our dedicated advisors.',
+      category: 'international'
+    },
+    {
+      question: 'Can I work while studying?',
+      answer: 'International students on a Tier 4 (Student) visa can typically work up to 20 hours per week during term time and full-time during holidays. However, work restrictions vary based on your visa type and level of study. Our career services can help you find suitable part-time opportunities that complement your studies.',
+      category: 'international'
+    },
+    {
+      question: 'What career services are available to students?',
+      answer: 'Our Career Development Center offers comprehensive services including one-on-one career counseling, resume and cover letter reviews, interview preparation, networking events, job fairs, and access to our online job portal. We also arrange industry visits and have strong connections with employers across various sectors.',
+      category: 'courses'
+    },
+    {
+      question: 'Are there opportunities for internships or work placements?',
+      answer: 'Yes, many of our programs include internship or work placement components. Our industry partnerships team works to secure quality opportunities for students. Additionally, our career services office can help you find internships that align with your career goals, even if they\'re not a formal part of your program.',
+      category: 'courses'
+    },
+    {
+      question: 'How do I access health services as a student?',
+      answer: 'All enrolled students have access to our on-campus health center which provides primary care, mental health services, and health education. International students are covered by the National Health Service (NHS) if their course lasts six months or longer. We also offer a student health insurance plan for those who may need additional coverage.',
+      category: 'international'
+    },
+    {
+      question: 'What financial aid options are available?',
+      answer: 'We offer various financial aid options including merit-based scholarships, need-based grants, work-study programs, and student loans. International students are eligible for many of our scholarships. Additionally, we can help you explore external funding sources and government aid programs that might be available to you.',
+      category: 'fees'
     }
-  };
-  
-  // Filter FAQs based on category and search
+  ];
+
+  // Filter FAQs based on search query and category
   const filteredFAQs = faqItems.filter(item => {
-    const matchesCategory = activeCategory === "All" || item.category === activeCategory;
-    const matchesSearch = 
-      searchQuery === "" || 
-      item.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.answer.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    return matchesCategory && matchesSearch;
+    const matchesSearch = item.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         item.answer.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
+    return matchesSearch && matchesCategory;
   });
-  
-  // Get unique categories
-  const categories = ["All", ...Array.from(new Set(faqItems.map(item => item.category)))];
-  
+
+  const toggleAccordion = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  // Count FAQs by category
+  const categoryCount = categories.map(category => {
+    if (category.id === 'all') {
+      return { ...category, count: faqItems.length };
+    }
+    return {
+      ...category,
+      count: faqItems.filter(item => item.category === category.id).length
+    };
+  });
+
   return (
     <>
-      <Section className="pt-28">
-        <div className="max-w-5xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
-          <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
-            Find answers to the most common questions about Royal Academy UK, our programs, admissions process, and more.
-          </p>
-          
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto mb-12">
-            <div className="relative">
-              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for questions..."
-                className="w-full pl-12 pr-4 py-4 border border-silver-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-ukblue/30 shadow-sm"
-              />
-            </div>
-            {searchQuery && (
-              <p className="text-left mt-2 text-gray-500">
-                Showing results for "{searchQuery}"
-              </p>
-            )}
-          </div>
-          
-          {/* Category Filters */}
-          <div className="flex flex-wrap justify-center gap-3 mb-12">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setActiveCategory(category)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                  activeCategory === category
-                    ? "bg-ukblue text-white"
-                    : "bg-silver-100 text-gray-700 hover:bg-silver-200"
-                }`}
+      {/* Hero Section with Advanced Design */}
+      <div className="relative min-h-[60vh] bg-gradient-to-b from-darkblue via-darkblue-lighter to-darkblue overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute inset-0 z-0">
+          {!shouldReduceMotion && (
+            <>
+              <div className="absolute top-0 left-0 w-full h-full bg-[url('/images/hero-pattern.png')] bg-repeat opacity-5"></div>
+              <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full bg-blue-400/10 blur-3xl"></div>
+              <div className="absolute bottom-1/3 left-1/3 w-64 h-64 rounded-full bg-gold/10 blur-3xl"></div>
+            </>
+          )}
+        </div>
+        
+        <div className="container-custom relative z-10 pt-32 pb-20 min-h-[60vh] flex flex-col justify-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Hero content */}
+            <div>
+              <motion.div
+                initial={fadeInVariants.hidden}
+                animate={fadeInVariants.visible}
+                transition={{ duration: shouldReduceMotion ? 0.1 : 0.5 }}
               >
-                {getCategoryIcon(category)}
-                {category}
-              </button>
-            ))}
+                <span className="inline-block px-4 py-1.5 mb-6 bg-blue-500/20 text-blue-100 rounded-full text-sm font-medium backdrop-blur-sm border border-blue-500/20">
+                  Knowledge Center
+                </span>
+                  
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                  Frequently<br />
+                  <ShinyText 
+                    text="Asked Questions"
+                    tagName="span"
+                    className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gold to-white"
+                  />
+                </h1>
+                  
+                <p className="text-lg md:text-xl text-blue-100 mb-8 max-w-xl">
+                  Find answers to common questions about our programs, admissions process, student life, and more.
+                </p>
+              </motion.div>
+            </div>
+            
+            {/* Hero image */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: shouldReduceMotion ? 0.1 : 0.8, delay: shouldReduceMotion ? 0 : 0.3 }}
+              className="hidden lg:block"
+            >
+              <div className="relative">
+                <div className="relative h-[400px] w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                  <Image
+                    src="/images/faq-hero.jpg"
+                    alt="Students at Greenwich"
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-darkblue/80 via-transparent to-transparent"></div>
+                </div>
+                
+                {/* Floating elements */}
+                <motion.div
+                  className="absolute -top-6 -left-6 max-w-[220px] bg-white rounded-xl p-3 shadow-xl"
+                  animate={shouldReduceMotion ? {} : { y: [0, -8, 0], x: [0, 5, 0] }}
+                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="bg-blue-100 rounded-lg w-10 h-10 flex items-center justify-center flex-shrink-0">
+                      <FaQuestionCircle className="text-darkblue" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-800">Questions</h3>
+                      <p className="text-2xl font-bold text-darkblue">{faqItems.length}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
           </div>
         </div>
         
-        {/* FAQ Questions */}
-        <div className="max-w-3xl mx-auto">
-          {filteredFAQs.length > 0 ? (
-            <div className="space-y-4">
-              {filteredFAQs.map((faq) => (
-                <motion.div
-                  key={faq.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="border border-silver-200 rounded-lg overflow-hidden"
-                >
+        {/* Floating elements */}
+        {!shouldReduceMotion && (
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <FloatingElements className="text-white/10" />
+          </div>
+        )}
+      </div>
+      
+      {/* Search Bar - Prominent Position */}
+      <div className="relative z-20 bg-white dark:bg-dark-background py-10">
+        <div className="container-custom">
+          <div className="max-w-3xl mx-auto -mt-20 bg-white dark:bg-dark-card shadow-xl rounded-xl p-6 border border-brand-gray-200 dark:border-dark-border">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-grow">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-darkblue dark:focus:ring-dark-highlight dark:bg-dark-card dark:text-dark-text-primary"
+                    placeholder="Search for questions..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+              </div>
+              <Button
+                variant="primary"
+                className="whitespace-nowrap"
+                onClick={() => setSearchQuery('')}
+              >
+                {searchQuery ? 'Clear Search' : 'Search FAQs'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Main FAQ Content */}
+      <Section background="light">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Category Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="bg-white dark:bg-dark-card p-6 rounded-xl shadow-sm border border-brand-gray-200 dark:border-dark-border sticky top-24">
+              <h3 className="text-xl font-bold text-darkblue dark:text-white mb-4">Categories</h3>
+              <div className="space-y-2">
+                {categoryCount.map(category => (
                   <button
-                    onClick={() => toggleItem(faq.id)}
-                    className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
+                    key={category.id}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-lg text-left transition-colors ${
+                      activeCategory === category.id 
+                        ? 'bg-darkblue text-white dark:bg-dark-primary' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-dark-card dark:border dark:border-dark-border dark:text-dark-text-secondary dark:hover:bg-dark-border/50'
+                    }`}
+                    onClick={() => setActiveCategory(category.id)}
                   >
-                    <span className="text-lg font-medium text-gray-800">{faq.question}</span>
-                    <span className="ml-4 flex-shrink-0 text-ukblue">
-                      {openItems.includes(faq.id) ? <FaChevronUp /> : <FaChevronDown />}
+                    <div className="flex items-center">
+                      <span className="w-5 h-5 mr-2">{category.icon}</span>
+                      <span>{category.name}</span>
+                    </div>
+                    <span className={`text-sm px-2 py-1 rounded-full ${
+                      activeCategory === category.id
+                        ? 'bg-white/20' 
+                        : 'bg-gray-200 dark:bg-dark-border'
+                    }`}>
+                      {category.count}
                     </span>
                   </button>
-                  <AnimatePresence>
-                    {openItems.includes(faq.id) && (
+                ))}
+              </div>
+              
+              <div className="mt-8 border-t border-gray-200 dark:border-dark-border pt-6">
+                <h3 className="text-xl font-bold text-darkblue dark:text-white mb-4">Need More Help?</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">Can't find what you're looking for? Our support team is ready to assist you.</p>
+                <Button
+                  variant="primary"
+                  className="w-full justify-center"
+                  href="/contact"
+                >
+                  Contact Support
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          {/* FAQ Accordions */}
+          <div className="lg:col-span-3" ref={featuredRef}>
+            <h2 className="text-3xl font-bold text-darkblue dark:text-white mb-6">
+              {activeCategory === 'all' 
+                ? 'All Questions' 
+                : categories.find(c => c.id === activeCategory)?.name}
+            </h2>
+            
+            {searchQuery && (
+              <p className="mb-6 text-gray-600 dark:text-gray-400">
+                {filteredFAQs.length} {filteredFAQs.length === 1 ? 'result' : 'results'} found for "{searchQuery}"
+              </p>
+            )}
+            
+            {filteredFAQs.length > 0 ? (
+              <div className="space-y-4">
+                {filteredFAQs.map((faq, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={isFeaturedInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                    className={`border border-gray-200 dark:border-dark-border rounded-xl overflow-hidden ${isRTL ? 'rtl text-right' : ''}`}
+                  >
+                    <button
+                      className={`flex justify-between items-center w-full p-5 text-left transition-colors ${
+                        openIndex === index
+                          ? 'bg-darkblue bg-opacity-5 dark:bg-dark-card'
+                          : 'bg-white dark:bg-dark-card hover:bg-gray-50 dark:hover:bg-dark-card/80'
+                      }`}
+                      onClick={() => toggleAccordion(index)}
+                    >
+                      <div className="flex items-start">
+                        <span className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center mr-3 mt-0.5 ${
+                          openIndex === index
+                            ? 'bg-darkblue text-white'
+                            : 'bg-gray-200 dark:bg-dark-border text-gray-700 dark:text-gray-300'
+                        }`}>
+                          <span className="text-xs font-bold">{index + 1}</span>
+                        </span>
+                        <span className={`font-medium ${
+                          openIndex === index
+                            ? 'text-darkblue dark:text-blue-400'
+                            : 'text-gray-800 dark:text-white'
+                        }`}>
+                          {faq.question}
+                        </span>
+                      </div>
+                      <div className={`flex-shrink-0 ml-4 transition-transform duration-300 ${
+                        openIndex === index ? 'rotate-180' : ''
+                      }`}>
+                        <ChevronDown className={`h-5 w-5 ${
+                          openIndex === index
+                            ? 'text-darkblue dark:text-blue-400'
+                            : 'text-gray-500 dark:text-gray-400'
+                        }`} />
+                      </div>
+                    </button>
+                    
+                    {openIndex === index && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
+                        animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3 }}
+                        className="p-5 bg-gray-50 dark:bg-dark-card/50 border-t border-gray-200 dark:border-dark-border"
                       >
-                        <div className="p-6 pt-0 border-t border-silver-200 bg-silver-50">
-                          <p className="text-gray-600">{faq.answer}</p>
-                          
-                          {/* Category Badge */}
-                          <div className="mt-4 flex justify-between items-center">
-                            <span className="text-xs font-medium bg-silver-200 text-gray-700 px-2 py-1 rounded-full">
-                              {faq.category}
-                            </span>
-                          </div>
+                        <div className="prose prose-gray dark:prose-invert max-w-none">
+                          <p className="text-gray-700 dark:text-gray-300">{faq.answer}</p>
+                        </div>
+                        <div className="mt-4 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                          <span className="px-2 py-1 bg-gray-100 dark:bg-dark-border rounded-full text-xs mr-2">
+                            {categories.find(cat => cat.id === faq.category)?.name}
+                          </span>
+                          <span>Was this answer helpful?</span>
+                          <button className="ml-2 px-2 py-1 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-md flex items-center text-xs hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors">
+                            <FaCheck className="mr-1" /> Yes
+                          </button>
                         </div>
                       </motion.div>
                     )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-12 bg-silver-50 rounded-lg">
-              <FaQuestion size={48} className="mx-auto text-silver-400 mb-4" />
-              <h3 className="text-xl font-medium text-gray-700 mb-2">No results found</h3>
-              <p className="text-gray-500 mb-6">
-                We couldn't find any questions matching your search criteria.
-              </p>
-              <Button 
-                onClick={() => {
-                  setSearchQuery("");
-                  setActiveCategory("All");
-                }}
-                variant="primary"
-              >
-                Reset Filters
-              </Button>
-            </div>
-          )}
-        </div>
-      </Section>
-      
-      {/* Still Have Questions */}
-      <Section background="ukblue" className="mt-12">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-white mb-6">Still Have Questions?</h2>
-          <p className="text-silver-300 mb-8">
-            If you couldn't find the answer to your question, feel free to reach out to our support team.
-            We're here to help!
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="accent" href="/contact">
-              Contact Support
-            </Button>
-            <Button variant="outline" href="/about" className="border-white text-white hover:bg-white/10">
-              Learn More About Us
-            </Button>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-gray-50 dark:bg-dark-card/50 rounded-xl border border-gray-200 dark:border-dark-border">
+                <div className="w-16 h-16 bg-gray-200 dark:bg-dark-border rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-2">No results found</h3>
+                <p className="text-gray-500 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                  We couldn't find any questions matching your search. Please try different keywords or browse all categories.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setActiveCategory('all');
+                  }}
+                >
+                  Browse All FAQs
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </Section>
+      
+      {/* Popular Topics */}
+      <Section background="white">
+        <div className="text-center mb-12">
+          <span className="inline-block px-4 py-1.5 mb-4 bg-darkblue/10 text-darkblue rounded-full text-sm font-medium backdrop-blur-sm dark:bg-darkblue/30 dark:text-blue-300">
+            Quick Access
+          </span>
+          <h2 className="text-3xl font-bold text-darkblue dark:text-white mb-4">
+            Popular Topics
+          </h2>
+          <p className="max-w-2xl mx-auto text-gray-600 dark:text-gray-300">
+            Explore commonly searched topics and find the information you need quickly
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            {
+              title: "Admissions Process",
+              description: "Step-by-step guide to applying for our programs, from preparation to acceptance",
+              icon: <FaGraduationCap className="text-darkblue" />,
+              link: "/admissions"
+            },
+            {
+              title: "Financial Aid & Scholarships",
+              description: "Information about tuition, fees, scholarships, and payment options",
+              icon: <CreditCard className="text-darkblue" />,
+              link: "/financial-aid"
+            },
+            {
+              title: "Student Life",
+              description: "Discover campus facilities, activities, clubs, events, and student support services",
+              icon: <Users className="text-darkblue" />,
+              link: "/student-life"
+            },
+            {
+              title: "Academic Programs",
+              description: "Browse our wide range of undergraduate, graduate, and professional programs",
+              icon: <BookOpen className="text-darkblue" />,
+              link: "/courses"
+            },
+            {
+              title: "International Students",
+              description: "Essential information for international applicants, including visa requirements",
+              icon: <Globe className="text-darkblue" />,
+              link: "/international"
+            },
+            {
+              title: "Campus Facilities",
+              description: "Explore our state-of-the-art facilities, libraries, labs, and accommodation options",
+              icon: <FaUniversity className="text-darkblue" />,
+              link: "/campus"
+            }
+          ].map((topic, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="bg-white dark:bg-dark-card rounded-xl shadow-sm border border-gray-200 dark:border-dark-border overflow-hidden hover:shadow-md transition-shadow"
+            >
+              <div className="p-6">
+                <div className="w-12 h-12 bg-brand-blue-50 dark:bg-dark-primary/20 rounded-lg flex items-center justify-center mb-4">
+                  {topic.icon}
+                </div>
+                <h3 className="text-xl font-bold text-darkblue dark:text-white mb-2">{topic.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">{topic.description}</p>
+                <a
+                  href={topic.link}
+                  className="inline-flex items-center text-darkblue hover:text-brand-blue-600 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors"
+                >
+                  Learn more <FaArrowRight className="ml-2 text-sm" />
+                </a>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+      
+      {/* CTA Section */}
+      <div className="bg-gradient-to-r from-darkblue to-darkblue-lighter py-20">
+        <div className="container-custom">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+            className="max-w-4xl mx-auto text-center"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              Still Have Questions?
+            </h2>
+            <p className="text-xl text-blue-100 mb-8">
+              Our dedicated support team is ready to assist you with any inquiries you may have about our programs, admissions process, or student life.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button
+                variant="secondary"
+                size="lg"
+                href="/contact"
+                className="px-8"
+              >
+                Contact Us
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                href="/request-info"
+                className="px-8 border-white/30 bg-white/5 backdrop-blur-sm text-white hover:bg-white/10"
+              >
+                Request Information
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </div>
     </>
   );
-}
-
-// Helper function to get category icon
-function getCategoryIcon(category: string) {
-  const icons = {
-    "All": null,
-    "Admissions": <FaUserGraduate className="inline mr-2" />,
-    "Programs": <FaGraduationCap className="inline mr-2" />,
-    "Fees & Funding": <FaCreditCard className="inline mr-2" />,
-    "International Students": <FaGlobeAmericas className="inline mr-2" />,
-    "Campus Life": <FaCalendarAlt className="inline mr-2" />,
-  };
-  
-  return icons[category as keyof typeof icons] || null;
-}
-
-// FAQ Data
-const faqItems: FAQItem[] = [
-  {
-    id: "faq-1",
-    question: "What are the entry requirements for your programs?",
-    answer: "Entry requirements vary by program. Generally, undergraduate programs require A-levels or equivalent qualifications, while postgraduate programs require a bachelor's degree in a relevant field. Specific requirements for each program can be found on the respective course pages. We also consider relevant work experience for certain programs.",
-    category: "Admissions"
-  },
-  {
-    id: "faq-2",
-    question: "How do I apply for a program at Royal Academy UK?",
-    answer: "To apply for a program, visit our website and navigate to the desired course page. Click on the 'Apply Now' button to begin the application process. You'll need to create an account, complete the application form, and upload required documents such as academic transcripts, personal statement, and references. Our admissions team will review your application and communicate the decision via email.",
-    category: "Admissions"
-  },
-  {
-    id: "faq-3",
-    question: "What is the application deadline?",
-    answer: "Application deadlines vary by program and intake. For most undergraduate programs, the main application deadline is January 15th for September entry. Postgraduate program deadlines typically range from February to June for September entry. We recommend applying early as popular programs may fill quickly. Some programs also offer January intake with application deadlines in October.",
-    category: "Admissions"
-  },
-  {
-    id: "faq-4",
-    question: "Do you offer online or distance learning options?",
-    answer: "Yes, we offer several programs in flexible formats including fully online and blended learning options. Our online programs maintain the same high standards as our on-campus offerings and are taught by the same faculty. These programs are ideal for working professionals or international students who cannot attend in-person classes. Visit our 'Online Learning' section for more details on available programs.",
-    category: "Programs"
-  },
-  {
-    id: "faq-5",
-    question: "How long do your programs typically take to complete?",
-    answer: "Program duration varies: undergraduate degrees typically take 3-4 years of full-time study; master's programs range from 1-2 years full-time; professional certificates can be completed in 3-6 months; and doctoral programs typically take 3-5 years. Many programs offer part-time options that extend these timeframes to accommodate working professionals.",
-    category: "Programs"
-  },
-  {
-    id: "faq-6",
-    question: "What accreditations does Royal Academy UK hold?",
-    answer: "Royal Academy UK is accredited by the Quality Assurance Agency for Higher Education (QAA) and holds institutional accreditation from the British Accreditation Council (BAC). Many of our professional programs have additional accreditations from relevant industry bodies such as the Association of MBAs (AMBA), the Chartered Management Institute (CMI), and other professional organizations specific to each field of study.",
-    category: "Programs"
-  },
-  {
-    id: "faq-7",
-    question: "What tuition fees can I expect to pay?",
-    answer: "Tuition fees vary by program level and type. For the 2023-2024 academic year, undergraduate programs for UK/EU students range from £9,250 to £12,500 per year, while international student fees range from £14,000 to £20,000 per year. Postgraduate program fees range from £11,000 to £25,000 for the entire program. Professional certificate programs typically cost between £1,500 and £5,000. Please check specific program pages for exact fee information.",
-    category: "Fees & Funding"
-  },
-  {
-    id: "faq-8",
-    question: "Are scholarships or financial aid available?",
-    answer: "Yes, we offer various scholarships and financial aid options. Merit-based scholarships are available for exceptional academic achievement, ranging from 10% to 50% of tuition fees. Need-based grants are available for students demonstrating financial need. We also offer specific scholarships for international students and those from underrepresented backgrounds. Additionally, eligible UK students can access government loans. Visit our 'Scholarships & Funding' page for application details and deadlines.",
-    category: "Fees & Funding"
-  },
-  {
-    id: "faq-9",
-    question: "What payment plans are available for tuition fees?",
-    answer: "We offer flexible payment options including installment plans that allow students to pay their tuition in 2-3 payments throughout the academic year. A small administrative fee may apply for installment plans. For some professional programs, we also offer 'pay-as-you-learn' options where payment is made module by module. Early payment discounts of 2-5% are available for full upfront payment of annual fees. Contact our finance office for specific details about payment options for your program.",
-    category: "Fees & Funding"
-  },
-  {
-    id: "faq-10",
-    question: "Do you provide visa assistance for international students?",
-    answer: "Yes, our International Student Office provides comprehensive visa support services. Once you've received your offer letter, our dedicated visa advisors will guide you through the Student Visa application process, provide necessary documentation, and offer advice on preparing for your visa interview. We also conduct pre-arrival webinars to help international students understand UK immigration requirements and prepare all necessary documentation for a smooth arrival.",
-    category: "International Students"
-  },
-  {
-    id: "faq-11",
-    question: "Is English language proficiency required for international students?",
-    answer: "Yes, international students whose first language is not English must demonstrate English language proficiency. We accept IELTS (Academic) with a minimum overall score of 6.5 (with no component below 6.0), TOEFL iBT with a minimum score of 90, or Cambridge English: Advanced (CAE) with a minimum grade of C. Some programs may have higher requirements. If you don't meet these requirements, we offer pre-sessional English courses that can help you reach the necessary level before your academic program begins.",
-    category: "International Students"
-  },
-  {
-    id: "faq-12",
-    question: "Is accommodation available for students?",
-    answer: "Yes, we offer various accommodation options for both undergraduate and postgraduate students. First-year undergraduate students are guaranteed university accommodation if they apply by the deadline. Options include traditional halls of residence, shared student apartments, and studio flats. Prices range from £125 to £250 per week, depending on the type of accommodation and location. All university accommodations include utilities, internet, and basic contents insurance. We also have a housing office that can assist students in finding private accommodation options.",
-    category: "Campus Life"
-  },
-  {
-    id: "faq-13",
-    question: "What facilities are available on campus?",
-    answer: "Our main campus features state-of-the-art facilities including a modern library with 24/7 access during term time, specialized computer labs, a student center with dining options, a health center, counseling services, and extensive sports facilities including a gym, swimming pool, and various courts and pitches. We also have dedicated quiet study spaces, group work areas, and specialized facilities relevant to specific programs such as design studios, science laboratories, and business simulation rooms.",
-    category: "Campus Life"
-  },
-  {
-    id: "faq-14",
-    question: "Are there opportunities for internships or work experience?",
-    answer: "Yes, we place strong emphasis on practical experience. Many programs include integrated work placements or internship opportunities. Our Career Services department maintains relationships with over 500 employers and helps students secure relevant work experience. For certain programs, we offer a sandwich year option allowing students to work in industry for a full year as part of their degree. Additionally, we host regular employer networking events, career fairs, and workshops to help students connect with potential employers.",
-    category: "Programs"
-  },
-  {
-    id: "faq-15",
-    question: "What support services are available for students with disabilities?",
-    answer: "Our Disability Support Services provides comprehensive assistance for students with physical disabilities, learning differences, mental health conditions, and other health issues. Services include academic accommodations, assistive technology, note-taking support, extended time for examinations, accessible housing options, and personal support workers when needed. We recommend contacting the Disability Support Services team before beginning your program to ensure appropriate accommodations are in place from the start of your studies.",
-    category: "Campus Life"
-  }
-]; 
+} 

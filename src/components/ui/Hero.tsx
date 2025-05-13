@@ -6,6 +6,7 @@ import { twMerge } from "tailwind-merge";
 import clsx from "clsx";
 import { Button } from "./Button";
 import { motion } from "framer-motion";
+import { useTheme } from "@/context/ThemeContext";
 
 interface HeroProps {
   title: string;
@@ -40,6 +41,7 @@ export function Hero({
   overlay = false,
   pattern = false,
 }: HeroProps) {
+  const { isRTL } = useTheme();
   const sizeClasses = {
     sm: "py-10 md:py-16",
     md: "py-16 md:py-24",
@@ -104,7 +106,7 @@ export function Hero({
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-block px-3 py-1 text-xs font-medium tracking-wider uppercase rounded-full bg-gold-100 text-gold-800 mb-4 shadow-sm"
+          className="inline-block px-3 py-1 text-xs font-medium tracking-wider uppercase rounded-full bg-brand-gold-100 text-brand-gold-800 mb-4 shadow-sm"
         >
           {subtitle}
         </motion.span>
@@ -115,7 +117,8 @@ export function Hero({
         animate="visible"
         className={clsx(
           "text-4xl sm:text-5xl md:text-6xl font-bold mb-4 leading-tight",
-          overlay ? "text-white" : "text-gray-900"
+          overlay ? "text-white" : "text-gray-900",
+          isRTL ? 'rtl' : ''
         )}
       >
         {title}
@@ -127,7 +130,8 @@ export function Hero({
           animate="visible"
           className={clsx(
             "text-lg mb-8 max-w-lg",
-            overlay ? "text-silver-200" : "text-gray-600"
+            overlay ? "text-lightgray" : "text-gray-600",
+            isRTL ? 'rtl' : ''
           )}
         >
           {description}
@@ -138,7 +142,10 @@ export function Hero({
           variants={buttonAnimation}
           initial="hidden"
           animate="visible"
-          className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+          className={clsx(
+            "flex flex-col sm:flex-row gap-4 justify-center md:justify-start",
+            isRTL ? 'flex-row-reverse' : ''
+          )}
         >
           {primaryButtonText && primaryButtonHref && (
             <Button href={primaryButtonHref} variant="gradient" size="lg">
@@ -154,7 +161,7 @@ export function Hero({
       )}
       
       {pattern && !overlay && (
-        <div className="absolute -z-10 -top-10 -left-10 w-72 h-72 bg-ukblue/5 rounded-full blur-3xl" />
+        <div className="absolute -z-10 -top-10 -left-10 w-72 h-72 bg-darkblue/5 rounded-full blur-3xl" />
       )}
     </div>
   );
@@ -179,8 +186,8 @@ export function Hero({
       
       {pattern && (
         <>
-          <div className="absolute -z-10 -bottom-10 right-10 w-40 h-40 bg-gold-300/30 rounded-full blur-2xl" />
-          <div className="absolute -z-10 -top-10 -right-10 w-60 h-60 bg-ukred/10 rounded-full blur-3xl" />
+          <div className="absolute -z-10 -bottom-10 right-10 w-40 h-40 bg-brand-gold-300/30 rounded-full blur-2xl" />
+          <div className="absolute -z-10 -top-10 -right-10 w-60 h-60 bg-gray/10 rounded-full blur-3xl" />
         </>
       )}
     </motion.div>
@@ -198,7 +205,7 @@ export function Hero({
             priority
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-ukblue/90 to-ukblue/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-darkblue/90 to-darkblue/70" />
         </div>
         <div className={containerClasses}>
           {contentContainer}
@@ -211,8 +218,8 @@ export function Hero({
     <section className={clsx("overflow-hidden relative", sizeClasses[size])}>
       {pattern && (
         <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-ukblue/5 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-gold-300/20 rounded-full blur-3xl" />
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-darkblue/5 rounded-full blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-brand-gold-300/20 rounded-full blur-3xl" />
         </div>
       )}
       <div className={containerClasses}>

@@ -6,35 +6,30 @@ import { FaBars, FaTimes } from "react-icons/fa";
 import { GraduationCap, ChevronDown, ChevronUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
-
-const NavLinks = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  { 
-    name: "Services", 
-    href: "#", 
-    dropdown: true,
-    items: [
-      { name: "Educational Services", href: "/services" },
-      { name: "Corporate Training", href: "/services#corporate" },
-      { name: "Research & Development", href: "/services#research" },
-      { name: "Student Support", href: "/services#support" }
-    ]
-  },
-  { name: "Courses", href: "/courses" },
-  { name: "Certificate", href: "/certificate" },
-  { name: "Testimonials", href: "/testimonials" },
-  { name: "News & Events", href: "/news-events" },
-  { name: "FAQ", href: "/faq" },
-  { name: "Contact", href: "/contact" },
-];
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { LanguageSelector } from "@/components/ui/LanguageSelector";
+import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Navbar() {
+  const { t, isRTL } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+
+  // Create NavLinks with translations
+  const NavLinks = [
+    { name: t("common.home"), href: "/" },
+    { name: t("common.about"), href: "/about" },
+    { name: t("common.services"), href: "/services" },
+    { name: t("common.courses"), href: "/courses" },
+    { name: t("common.certificate"), href: "/certificate" },
+    { name: t("common.testimonials"), href: "/testimonials" },
+    { name: t("common.news_events"), href: "/news-events" },
+    { name: t("common.faq"), href: "/faq" },
+    { name: t("common.contact"), href: "/contact" },
+  ];
 
   // Handle scrolling effect
   useEffect(() => {
@@ -84,7 +79,7 @@ export default function Navbar() {
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`bg-white border-b border-silver-200 sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-lg' : 'shadow-sm'}`}
+      className={`bg-white dark:bg-dark-card border-b border-brand-gray-200 dark:border-dark-border sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'shadow-lg dark:shadow-dark-background/30' : 'shadow-sm dark:shadow-dark-background/10'}`}
     >
       <div className="container-custom flex items-center justify-between h-20">
         {/* Logo */}
@@ -93,114 +88,70 @@ export default function Navbar() {
             whileHover={{ rotate: 5, scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <GraduationCap className="h-8 w-8 text-ukblue group-hover:text-gradient-to-r from-ukblue to-ukred" />
+            <GraduationCap className="h-8 w-8 text-darkblue group-hover:text-gradient-to-r from-darkblue to-gold" />
           </motion.div>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold text-ukblue group-hover:text-ukred transition-colors duration-300">Royal Academy</span>
-            <span className="text-xs text-silver-600 tracking-wider">UNITED KINGDOM</span>
+          <div className={`flex flex-col ${isRTL ? 'mr-2' : 'ml-2'}`}>
+            <span className="text-xl font-bold text-darkblue group-hover:text-gray transition-colors duration-300">Greenwich</span>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
           {NavLinks.map((link) => (
-            <div key={link.name} className="relative" ref={link.dropdown ? dropdownRef : undefined}>
-              {link.dropdown ? (
-                <div className="relative">
-                  <button
-                    onClick={() => toggleDropdown(link.name)}
-                    className={`text-sm font-medium flex items-center hover:text-ukblue transition-colors relative ${
-                      isActive(link.href) ? "text-ukblue" : "text-gray-600"
-                    }`}
-                  >
-                    {link.name}
+            <div key={link.name} className="relative">
+              <Link
+                href={link.href}
+                className={`text-sm font-medium hover:text-darkblue dark:hover:text-gold transition-colors relative ${
+                  isActive(link.href) ? "text-darkblue dark:text-gold" : "text-gray-600 dark:text-dark-text-secondary"
+                }`}
+              >
+                <span className="relative px-1 py-2">
+                  {link.name}
+                  {isActive(link.href) && (
                     <motion.span
-                      animate={{ rotate: openDropdown === link.name ? 180 : 0 }}
+                      layoutId="navbar-indicator"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-gold to-brand-gold-400 dark:from-dark-highlight dark:to-gold"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
                       transition={{ duration: 0.2 }}
-                    >
-                      <ChevronDown className="ml-1 h-4 w-4" />
-                    </motion.span>
-                  </button>
-                  <AnimatePresence>
-                    {openDropdown === link.name && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl overflow-hidden z-50 border border-silver-200"
-                        style={{ 
-                          background: "linear-gradient(to bottom, white, #f9fafb)",
-                          borderTop: "3px solid #00247D"
-                        }}
-                      >
-                        <div className="py-2">
-                          {link.items?.map((item) => (
-                            <Link
-                              key={item.name}
-                              href={item.href}
-                              className="block px-4 py-3 text-sm text-gray-700 hover:bg-silver-50 hover:text-ukblue transition-colors"
-                              onClick={() => setOpenDropdown(null)}
-                            >
-                              <motion.div
-                                whileHover={{ x: 5 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                                className="flex items-center"
-                              >
-                                {item.name}
-                              </motion.div>
-                            </Link>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              ) : (
-                <Link
-                  href={link.href}
-                  className={`text-sm font-medium hover:text-ukblue transition-colors relative ${
-                    isActive(link.href) ? "text-ukblue" : "text-gray-600"
-                  }`}
-                >
-                  <span className="relative px-1 py-2">
-                    {link.name}
-                    {isActive(link.href) && (
-                      <motion.span
-                        layoutId="navbar-indicator"
-                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-gold-500 to-gold-400"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.2 }}
-                      />
-                    )}
-                  </span>
-                </Link>
-              )}
+                    />
+                  )}
+                </span>
+              </Link>
             </div>
           ))}
         </div>
 
-        {/* Login Button */}
+        {/* Login Button and Theme/Language Selectors */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link href="/login" className="inline-flex transform hover:-translate-y-0.5 active:translate-y-0 transition-transform duration-300 items-center font-semibold text-sm text-ukblue border-2 border-ukblue hover:bg-ukblue/10 px-4 py-2 rounded-md">
-            Login
+          <LanguageSelector className="mr-2" />
+          <ThemeToggle className="mr-4 hover:bg-gray-100 dark:hover:bg-dark-card rounded-full" />
+          <Link href="/login" className="inline-flex transform hover:-translate-y-0.5 active:translate-y-0 transition-transform duration-300 items-center font-semibold text-sm text-darkblue dark:text-dark-text-primary border-2 border-darkblue dark:border-dark-primary dark:hover:bg-dark-primary dark:hover:bg-opacity-20 hover:bg-brand-blue-100 px-4 py-2 rounded-md">
+            {t("common.login")}
           </Link>
-          <Link href="/profile" className="inline-flex transform hover:-translate-y-0.5 active:translate-y-0 transition-transform duration-300 items-center font-semibold text-sm bg-gradient-to-r from-ukblue to-ukblue/90 hover:from-ukblue/90 hover:to-ukblue text-white px-4 py-2 rounded-md shadow-sm hover:shadow-md">
-            Profile
+          <Link href="/profile" className="inline-flex transform hover:-translate-y-0.5 active:translate-y-0 transition-transform duration-300 items-center font-semibold text-sm bg-gradient-to-r from-darkblue to-brand-blue-600 dark:from-dark-primary dark:to-dark-primary hover:from-brand-blue-600 hover:to-darkblue text-white px-4 py-2 rounded-md shadow-sm hover:shadow-md">
+            {t("common.profile")}
           </Link>
         </div>
 
         {/* Mobile Menu Button */}
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          type="button"
-          onClick={toggleMobileMenu}
-          className="md:hidden text-gray-600 hover:text-ukblue focus:outline-none"
-          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-        >
-          {mobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-        </motion.button>
+        <div className="md:hidden flex items-center space-x-3">
+          <LanguageSelector />
+          <ThemeToggle className="hover:bg-gray-100 dark:hover:bg-dark-card rounded-full" />
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            type="button"
+            onClick={toggleMobileMenu}
+            className="text-gray-600 dark:text-dark-text-secondary hover:text-darkblue dark:hover:text-dark-text-primary focus:outline-none"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileMenuOpen ? (
+              <FaTimes className="h-6 w-6" />
+            ) : (
+              <FaBars className="h-6 w-6" />
+            )}
+          </motion.button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -211,88 +162,44 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white border-b border-silver-200 overflow-hidden shadow-lg"
+            className="md:hidden bg-white border-t border-brand-gray-200 overflow-hidden"
           >
-            <div className="container-custom py-4 space-y-1">
-              {NavLinks.map((link) => (
-                <div key={link.name}>
-                  {link.dropdown ? (
-                    <div>
-                      <motion.button
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => toggleDropdown(link.name)}
-                        className={`flex items-center justify-between w-full py-3 px-4 rounded-lg text-left ${
-                          openDropdown === link.name
-                            ? "bg-silver-50 text-ukblue"
-                            : "text-gray-600"
-                        }`}
-                      >
-                        <span className="text-base font-medium">{link.name}</span>
-                        <motion.span
-                          animate={{ rotate: openDropdown === link.name ? 180 : 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
-                          <ChevronDown className="h-4 w-4" />
-                        </motion.span>
-                      </motion.button>
-                      <AnimatePresence>
-                        {openDropdown === link.name && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="pl-4 space-y-1 mt-1"
-                          >
-                            {link.items?.map((item) => (
-                              <Link
-                                key={item.name}
-                                href={item.href}
-                                className="block py-2 px-4 text-sm text-gray-600 hover:text-ukblue rounded-lg"
-                                onClick={handleMobileLinkClick}
-                              >
-                                <motion.div
-                                  whileHover={{ x: 5 }}
-                                  transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                                >
-                                  {item.name}
-                                </motion.div>
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ) : (
+            <div className="container-custom py-4">
+              <div className="space-y-1">
+                {NavLinks.map((link) => (
+                  <div key={link.name} className="py-2">
                     <Link
                       href={link.href}
-                      className={`block py-3 px-4 rounded-lg text-base font-medium ${
+                      className={`block px-3 py-2 text-base font-medium rounded-md ${
                         isActive(link.href)
-                          ? "bg-gradient-to-r from-ukblue/10 to-transparent text-ukblue"
-                          : "text-gray-600 hover:bg-silver-50 hover:text-ukblue"
+                          ? "text-darkblue bg-brand-blue-50"
+                          : "text-gray-600 hover:text-darkblue hover:bg-brand-blue-50"
                       }`}
                       onClick={handleMobileLinkClick}
                     >
                       {link.name}
                     </Link>
-                  )}
+                  </div>
+                ))}
+              </div>
+              <div className="pt-4 pb-3 border-t border-brand-gray-200">
+                <div className="flex items-center space-x-3 mt-4">
+                  <ThemeToggle className="hover:bg-gray-100 dark:hover:bg-dark-card rounded-full" />
+                  <Link
+                    href="/login"
+                    className="flex-1 text-center font-medium text-sm px-4 py-2 border border-darkblue text-darkblue hover:bg-brand-blue-50 rounded-md"
+                    onClick={handleMobileLinkClick}
+                  >
+                    {t("common.login")}
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className="flex-1 text-center font-medium text-sm px-4 py-2 bg-darkblue text-white hover:bg-brand-blue-600 rounded-md"
+                    onClick={handleMobileLinkClick}
+                  >
+                    {t("common.profile")}
+                  </Link>
                 </div>
-              ))}
-              <div className="pt-4 flex flex-col space-y-3">
-                <Link 
-                  href="/login" 
-                  className="py-2.5 px-4 text-center rounded-lg border-2 border-ukblue text-ukblue font-medium text-sm"
-                  onClick={handleMobileLinkClick}
-                >
-                  Login
-                </Link>
-                <Link 
-                  href="/profile" 
-                  className="py-2.5 px-4 text-center rounded-lg bg-gradient-to-r from-ukblue to-ukblue/90 text-white font-medium text-sm shadow-sm"
-                  onClick={handleMobileLinkClick}
-                >
-                  Profile
-                </Link>
               </div>
             </div>
           </motion.div>

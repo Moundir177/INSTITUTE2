@@ -1,0 +1,64 @@
+{
+  "common": {
+    "home": "الرئيسية",
+    "about": "من نحن",
+    "services": "الخدمات",
+    "courses": "الدورات",
+    "certificate": "الشهادات",
+    "testimonials": "آراء الطلاب",
+    "news_events": "الأخبار والفعاليات",
+    "faq": "الأسئلة الشائعة",
+    "contact": "اتصل بنا",
+    "login": "تسجيل الدخول",
+    "profile": "الملف الشخصي",
+    "language": "اللغة",
+    "english": "الإنجليزية",
+    "french": "الفرنسية",
+    "arabic": "العربية"
+  },
+  "services": {
+    "educational": "الخدمات التعليمية",
+    "corporate": "التدريب المؤسسي",
+    "research": "البحث والتطوير",
+    "support": "دعم الطلاب"
+  },
+  "theme": {
+    "dark": "الوضع الداكن",
+    "light": "الوضع الفاتح",
+    "switch_to_light": "التبديل إلى الوضع الفاتح",
+    "switch_to_dark": "التبديل إلى الوضع الداكن"
+  },
+  "course": {
+    "explore": "استكشف دوراتنا",
+    "discover": "اكتشف مجموعة واسعة من الدورات المصممة لمساعدتك على تحقيق أهدافك الأكاديمية والمهنية.",
+    "browse_all": "تصفح جميع الدورات",
+    "contact_admissions": "التواصل مع القبول",
+    "categories": "فئات الدورات",
+    "explore_subject": "استكشف مجموعة متنوعة من مجالات الدراسة",
+    "apply_now": "قدم الآن",
+    "speak_advisor": "تحدث مع مستشار",
+    "students": "طالب",
+    "duration": "المدة",
+    "format": "الشكل",
+    "difficulty": "المستوى",
+    "search": "البحث عن دورات...",
+    "all_levels": "جميع المستويات",
+    "all_categories": "جميع الفئات",
+    "all_durations": "جميع المدد",
+    "all_formats": "جميع الأشكال",
+    "details": "التفاصيل",
+    "enroll_now": "سجل الآن",
+    "price": "السعر",
+    "view_details": "عرض التفاصيل",
+    "save": "حفظ",
+    "saved": "تم الحفظ",
+    "view_all": "عرض جميع الدورات"
+  },
+  "footer": {
+    "rights_reserved": "جميع الحقوق محفوظة",
+    "privacy_policy": "سياسة الخصوصية",
+    "terms": "الشروط والأحكام",
+    "sitemap": "خريطة الموقع"
+  },
+  "direction": "rtl"
+} 

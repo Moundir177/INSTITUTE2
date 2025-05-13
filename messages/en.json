@@ -1,0 +1,64 @@
+{
+  "common": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "courses": "Courses",
+    "certificate": "Certificate",
+    "testimonials": "Testimonials",
+    "news_events": "News & Events",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "login": "Login",
+    "profile": "Profile",
+    "language": "Language",
+    "english": "English",
+    "french": "French",
+    "arabic": "Arabic"
+  },
+  "services": {
+    "educational": "Educational Services",
+    "corporate": "Corporate Training",
+    "research": "Research & Development",
+    "support": "Student Support"
+  },
+  "theme": {
+    "dark": "Dark Mode",
+    "light": "Light Mode",
+    "switch_to_light": "Switch to light mode",
+    "switch_to_dark": "Switch to dark mode"
+  },
+  "course": {
+    "explore": "Explore Our Courses",
+    "discover": "Discover a wide range of courses designed to help you achieve your academic and professional goals.",
+    "browse_all": "Browse All Courses",
+    "contact_admissions": "Contact Admissions",
+    "categories": "Course Categories",
+    "explore_subject": "Explore our diverse range of subject areas",
+    "apply_now": "Apply Now",
+    "speak_advisor": "Speak to an Advisor",
+    "students": "students",
+    "duration": "Duration",
+    "format": "Format",
+    "difficulty": "Difficulty",
+    "search": "Search courses...",
+    "all_levels": "All Levels",
+    "all_categories": "All Categories",
+    "all_durations": "All Durations",
+    "all_formats": "All Formats",
+    "details": "Details",
+    "enroll_now": "Enroll Now",
+    "price": "Price",
+    "view_details": "View Details",
+    "save": "Save",
+    "saved": "Saved",
+    "view_all": "View All Courses"
+  },
+  "footer": {
+    "rights_reserved": "All Rights Reserved",
+    "privacy_policy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "sitemap": "Sitemap"
+  },
+  "direction": "ltr"
+} 

@@ -90,8 +90,8 @@ export function GlassCard({
   const content = (
     <>
       {/* Optional decorative elements */}
-      <div className="absolute -top-10 -right-10 w-20 h-20 rounded-full bg-ukblue/10 blur-xl"></div>
-      <div className="absolute -bottom-10 -left-10 w-20 h-20 rounded-full bg-ukred/10 blur-xl"></div>
+      <div className="absolute -top-10 -right-10 w-20 h-20 rounded-full bg-darkblue/10 blur-xl"></div>
+      <div className="absolute -bottom-10 -left-10 w-20 h-20 rounded-full bg-brand-gold-300/10 blur-xl"></div>
       
       {/* Main content */}
       <div className="relative z-10">{children}</div>

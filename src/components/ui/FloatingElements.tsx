@@ -20,9 +20,9 @@ export function FloatingElements({
 }: FloatingElementsProps) {
   // Determine colors based on variant
   const colors = {
-    default: ["bg-ukblue/10", "bg-ukred/10", "bg-gold-300/20"],
-    royal: ["bg-gold-400/20", "bg-ukblue/15", "bg-silver-300/20"],
-    subtle: ["bg-gray-100", "bg-gray-200/50", "bg-silver-100/50"],
+    default: ["bg-darkblue/10", "bg-brand-blue-400/10", "bg-brand-gold-300/20"],
+    royal: ["bg-gold/20", "bg-darkblue/15", "bg-lightgray/20"],
+    subtle: ["bg-gray-100", "bg-brand-gray-200/50", "bg-lightgray/50"],
   };
 
   // Determine number of elements based on density

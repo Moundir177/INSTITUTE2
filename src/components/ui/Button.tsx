@@ -1,67 +1,108 @@
-import { ReactNode, ButtonHTMLAttributes } from "react";
-import Link from "next/link";
-import { twMerge } from "tailwind-merge";
-import clsx from "clsx";
+"use client";
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-  variant?: "primary" | "secondary" | "accent" | "outline" | "gradient";
-  size?: "sm" | "md" | "lg";
+import React from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { useTheme } from '@/context/ThemeContext';
+
+interface ButtonProps {
+  children: React.ReactNode;
+  variant?: 'primary' | 'secondary' | 'outline' | 'accent' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
   href?: string;
-  fullWidth?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+  onClick?: () => void;
+  disabled?: boolean;
   className?: string;
-  icon?: ReactNode;
+  icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
 }
 
-export function Button({
+export const Button: React.FC<ButtonProps> = ({
   children,
-  variant = "primary",
-  size = "md",
+  variant = 'primary',
+  size = 'md',
   href,
-  fullWidth = false,
-  className,
+  type = 'button',
+  onClick,
+  disabled = false,
+  className = '',
   icon,
-  ...props
-}: ButtonProps) {
-  const variantClasses = {
-    primary: "bg-ukblue text-white hover:bg-ukblue/90 focus:ring-ukblue/20 shadow-sm hover:shadow-md",
-    secondary: "bg-ukred text-white hover:bg-ukred/90 focus:ring-ukred/20 shadow-sm hover:shadow-md",
-    accent: "bg-gold-500 text-black hover:bg-gold-400 focus:ring-gold-300/40 shadow-sm hover:shadow-md",
-    outline: "border-2 border-ukblue text-ukblue hover:bg-ukblue/10 focus:ring-ukblue/20",
-    gradient: "bg-gradient-to-r from-ukblue via-ukblue to-ukred text-white hover:brightness-110 focus:ring-ukblue/20 shadow-md hover:shadow-lg",
-  };
-
-  const sizeClasses = {
-    sm: "text-xs px-3 py-1.5 rounded",
-    md: "text-sm px-4 py-2 rounded-md",
-    lg: "text-base px-6 py-3 rounded-md",
-  };
-
-  const baseClasses = "font-semibold transition-all duration-300 focus:outline-none focus:ring-4 inline-flex items-center justify-center transform hover:-translate-y-0.5 active:translate-y-0";
+  iconPosition = 'left',
+}) => {
+  const { isRTL } = useTheme();
   
-  const classes = twMerge(
-    clsx(
-      baseClasses,
-      variantClasses[variant],
-      sizeClasses[size],
-      fullWidth ? "w-full" : "",
-      className
-    )
-  );
-
+  // Size classes
+  const sizeClasses = {
+    sm: 'px-3 py-1.5 text-sm',
+    md: 'px-4 py-2',
+    lg: 'px-6 py-3 text-lg',
+  };
+  
+  // Variant classes
+  const variantClasses = {
+    primary: 'btn-primary',
+    secondary: 'btn-secondary',
+    outline: 'btn-outline',
+    accent: 'btn-accent',
+    ghost: 'bg-transparent hover:bg-white/10 text-current',
+  };
+  
+  // Combine all classes
+  const buttonClasses = `
+    inline-flex items-center justify-center 
+    rounded-md font-medium transition-all duration-200
+    ${variantClasses[variant]} 
+    ${sizeClasses[size]} 
+    ${disabled ? 'opacity-60 cursor-not-allowed' : 'hover:shadow-md'} 
+    ${className}
+  `;
+  
+  // Icon rendering based on position
+  const renderContent = () => {
+    // Adjust icon position for RTL
+    const effectiveIconPosition = isRTL ? 
+      (iconPosition === 'left' ? 'right' : 'left') : 
+      iconPosition;
+    
+    return (
+      <>
+        {icon && effectiveIconPosition === 'left' && (
+          <span className={`${isRTL ? 'ml-2' : 'mr-2'}`}>{icon}</span>
+        )}
+        {children}
+        {icon && effectiveIconPosition === 'right' && (
+          <span className={`${isRTL ? 'mr-2' : 'ml-2'}`}>{icon}</span>
+        )}
+      </>
+    );
+  };
+  
+  // Render button or link
   if (href) {
     return (
-      <Link href={href} className={classes}>
-        {icon && <span className="mr-2">{icon}</span>}
-        {children}
+      <Link href={href} className={buttonClasses}>
+        <motion.span
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center justify-center"
+        >
+          {renderContent()}
+        </motion.span>
       </Link>
     );
   }
-
+  
   return (
-    <button className={classes} {...props}>
-      {icon && <span className="mr-2">{icon}</span>}
-      {children}
-    </button>
+    <motion.button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={buttonClasses}
+      whileHover={disabled ? {} : { scale: 1.03 }}
+      whileTap={disabled ? {} : { scale: 0.98 }}
+    >
+      {renderContent()}
+    </motion.button>
   );
-} 
+}; 

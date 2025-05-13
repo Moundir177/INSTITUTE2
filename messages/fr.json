@@ -1,0 +1,64 @@
+{
+  "common": {
+    "home": "Accueil",
+    "about": "À Propos",
+    "services": "Services",
+    "courses": "Cours",
+    "certificate": "Certificat",
+    "testimonials": "Témoignages",
+    "news_events": "Actualités & Événements",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "login": "Connexion",
+    "profile": "Profil",
+    "language": "Langue",
+    "english": "Anglais",
+    "french": "Français",
+    "arabic": "Arabe"
+  },
+  "services": {
+    "educational": "Services Éducatifs",
+    "corporate": "Formation Professionnelle",
+    "research": "Recherche & Développement",
+    "support": "Soutien aux Étudiants"
+  },
+  "theme": {
+    "dark": "Mode Sombre",
+    "light": "Mode Clair",
+    "switch_to_light": "Passer au mode clair",
+    "switch_to_dark": "Passer au mode sombre"
+  },
+  "course": {
+    "explore": "Explorez Nos Cours",
+    "discover": "Découvrez une large gamme de cours conçus pour vous aider à atteindre vos objectifs académiques et professionnels.",
+    "browse_all": "Parcourir Tous les Cours",
+    "contact_admissions": "Contacter les Admissions",
+    "categories": "Catégories de Cours",
+    "explore_subject": "Explorez notre diversité de domaines d'études",
+    "apply_now": "Postulez Maintenant",
+    "speak_advisor": "Parler à un Conseiller",
+    "students": "étudiants",
+    "duration": "Durée",
+    "format": "Format",
+    "difficulty": "Niveau",
+    "search": "Rechercher des cours...",
+    "all_levels": "Tous les Niveaux",
+    "all_categories": "Toutes les Catégories",
+    "all_durations": "Toutes les Durées",
+    "all_formats": "Tous les Formats",
+    "details": "Détails",
+    "enroll_now": "S'inscrire Maintenant",
+    "price": "Prix",
+    "view_details": "Voir les Détails",
+    "save": "Sauvegarder",
+    "saved": "Sauvegardé",
+    "view_all": "Voir Tous les Cours"
+  },
+  "footer": {
+    "rights_reserved": "Tous Droits Réservés",
+    "privacy_policy": "Politique de Confidentialité",
+    "terms": "Conditions Générales",
+    "sitemap": "Plan du Site"
+  },
+  "direction": "ltr"
+} 

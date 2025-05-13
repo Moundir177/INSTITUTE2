@@ -3,12 +3,38 @@
 @tailwind utilities;
 
 :root {
+  /* Royal Academy UK Color Palette */
+  --color-darkblue: #00247D;  /* Dark Blue - Primary */
+  --color-darkblue-lighter: #0A318F;
+  --color-gold: #CFB53B;  /* Gold */
+  --color-cream: #F5F5DC;  /* Cream */
+  --color-gray-dark: #333333;
+  --color-gray: #666666;
+  --color-gray-light: #DDDDDD;
+  --color-white: #FFFFFF;
+
+  /* Other System Colors */
+  --color-blue-500: #3B82F6;
+  --color-purple-500: #8B5CF6;
+  --color-green-500: #10B981;
+  --color-red-500: #EF4444;
+
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #00247D; /* UK blue */
-  --secondary: #CF142B; /* UK red */
-  --accent: #FFC000; /* Gold */
-  --muted: #8D98A5; /* Silver */
+  --primary: #012169; /* Dark Blue - Pantone 280C */
+  --secondary: #D4AF37; /* Gold - PMS 9143c */
+  --accent: #6E7F80; /* Gray - PMS 7544c */
+  --muted: #E0E0E0; /* Light Gray */
+}
+
+/* Dark mode variables */
+.dark {
+  --background: #121418;
+  --foreground: #E1E2E5;
+  --primary: #1F3E7C; /* Darker Blue */
+  --secondary: #C49A2F; /* Darker Gold */
+  --accent: #4A5056; /* Darker Gray */
+  --muted: #2E323C; /* Darker Light Gray */
 }
 
 @theme inline {
@@ -18,42 +44,94 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #00247D;
-    --secondary: #CF142B;
-    --accent: #FFC000;
-    --muted: #8D98A5;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Transition for all elements when switching themes */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* RTL Support */
+html[dir="rtl"] .md\:space-x-6 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1 !important;
+}
+
+html[dir="rtl"] .space-x-4 > :not([hidden]) ~ :not([hidden]),
+html[dir="rtl"] .space-x-3 > :not([hidden]) ~ :not([hidden]),
+html[dir="rtl"] .space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1 !important;
+}
+
+html[dir="rtl"] .space-x-1 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1 !important;
+}
+
+html[dir="rtl"] .ml-1, 
+html[dir="rtl"] .ml-2, 
+html[dir="rtl"] .ml-3, 
+html[dir="rtl"] .ml-4 {
+  margin-right: 0.25rem;
+  margin-right: var(--tw-space-x-reverse);
+  margin-left: 0;
+}
+
+html[dir="rtl"] .mr-1, 
+html[dir="rtl"] .mr-2, 
+html[dir="rtl"] .mr-3, 
+html[dir="rtl"] .mr-4 {
+  margin-left: 0.25rem;
+  margin-left: calc(var(--tw-space-x-reverse) * 0);
+  margin-right: 0;
+}
+
+html[dir="rtl"] .text-left {
+  text-align: right;
+}
+
+html[dir="rtl"] .text-right {
+  text-align: left;
+}
+
+/* Additional RTL-specific utilities */
+.rtl\:flip-x {
+  transform: scaleX(-1);
+}
+
+.rtl\:space-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1 !important;
 }
 
 @layer components {
+  .container-custom {
+    @apply container mx-auto px-4 md:px-6;
+  }
+  
   .btn-primary {
-    @apply bg-ukblue text-white hover:bg-ukblue/90 px-4 py-2 rounded-md font-semibold transition-all;
+    @apply bg-darkblue text-white hover:bg-brand-blue-600;
   }
   
   .btn-secondary {
-    @apply bg-ukred text-white hover:bg-ukred/90 px-4 py-2 rounded-md font-semibold transition-all;
-  }
-  
-  .btn-accent {
-    @apply bg-gold-500 text-black hover:bg-gold-400 px-4 py-2 rounded-md font-semibold transition-all;
+    @apply bg-gold text-darkblue hover:bg-brand-gold-600;
   }
   
   .btn-outline {
-    @apply border border-ukblue text-ukblue hover:bg-ukblue/10 px-4 py-2 rounded-md font-semibold transition-all;
+    @apply bg-transparent border border-current;
   }
   
-  .container-custom {
-    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+  .btn-accent {
+    @apply bg-gradient-to-r from-darkblue to-blue-500 text-white;
+  }
+  
+  /* Dark mode card styling */
+  .dark-card {
+    @apply bg-white dark:bg-dark-background border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm;
   }
 }
 
@@ -77,6 +155,11 @@ body {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
+/* Dark mode adjustments for alumni cards */
+.dark .alumni-card:hover {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
 /* Custom scrollbar for modal content */
 ::-webkit-scrollbar {
   width: 8px;
@@ -87,17 +170,106 @@ body {
   border-radius: 10px;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: rgba(30, 32, 40, 0.6);
+}
+
 ::-webkit-scrollbar-thumb {
-  background: rgba(136, 136, 136, 0.5);
+  background: var(--accent);
   border-radius: 10px;
+  opacity: 0.5;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(85, 85, 85, 0.7);
+  background: var(--primary);
+  opacity: 0.7;
 }
 
 /* Form focus effects */
 input:focus, select:focus, textarea:focus {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--secondary);
   outline-offset: 2px;
+}
+
+/* Dark mode images - lower contrast slightly */
+.dark img:not([src*=".svg"]) {
+  filter: brightness(0.9) contrast(0.95);
+}
+
+/* University-Specific Colors */
+.text-gold {
+  color: var(--color-gold);
+}
+
+.bg-gold {
+  background-color: var(--color-gold);
+}
+
+.text-darkblue, .text-ukblue {
+  color: var(--color-darkblue);
+}
+
+.bg-darkblue, .bg-ukblue {
+  background-color: var(--color-darkblue);
+}
+
+.text-cream {
+  color: var(--color-cream);
+}
+
+.bg-cream {
+  background-color: var(--color-cream);
+}
+
+.border-gold {
+  border-color: var(--color-gold);
+}
+
+.border-darkblue {
+  border-color: var(--color-darkblue);
+}
+
+/* Gradient Classes */
+.bg-gradient-university {
+  background: linear-gradient(to right, var(--color-darkblue), var(--color-gold));
+}
+
+.text-gradient-university {
+  background: linear-gradient(to right, var(--color-darkblue), var(--color-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    background-attachment: initial !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+  }
+}
+
+/* Respect our custom toggle setting */
+html[data-reduced-motion="true"] *, 
+html[data-reduced-motion="true"] ::before, 
+html[data-reduced-motion="true"] ::after {
+  animation-delay: -1ms !important;
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  background-attachment: initial !important;
+  scroll-behavior: auto !important;
+  transition-duration: 0.1s !important;
+  transition-delay: 0s !important;
+}
+
+/* Optimize animations and transitions for better performance */
+.transform-gpu {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000;
+  will-change: transform;
 }

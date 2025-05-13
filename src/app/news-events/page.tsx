@@ -44,9 +44,9 @@ export default function NewsEventsPage() {
       {/* Hero Section */}
       <Hero
         title="News & Events"
-        description="Stay updated with the latest news, upcoming events, and announcements from Royal Academy UK."
+        description="Stay updated with the latest news, upcoming events, and announcements from Greenwich."
         imageSrc="/images/news-events-hero.jpg"
-        imageAlt="Royal Academy UK event"
+        imageAlt="Greenwich event"
         primaryButtonText="View Upcoming Events"
         primaryButtonHref="#events"
         secondaryButtonText="Latest News"
@@ -54,7 +54,7 @@ export default function NewsEventsPage() {
       />
 
       {/* Search and Filters Section */}
-      <Section background="gray" className="py-12">
+      <Section background="light" className="py-12">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex flex-col md:flex-row gap-4 items-center mb-6">
@@ -175,7 +175,7 @@ export default function NewsEventsPage() {
             <div className="relative h-64 lg:h-auto order-1 lg:order-2">
               <Image
                 src="/images/graduation-ceremony.jpg"
-                alt="Royal Academy UK Graduation Ceremony"
+                alt="Greenwich Graduation Ceremony"
                 fill
                 className="object-cover"
               />
@@ -188,8 +188,8 @@ export default function NewsEventsPage() {
       <Section
         id="events"
         title="Upcoming Events"
-        subtitle="Mark your calendar for these exciting events at Royal Academy UK"
-        background="gray"
+        subtitle="Mark your calendar for these exciting events at Greenwich"
+        background="light"
       >
         {filteredEvents.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -200,7 +200,7 @@ export default function NewsEventsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all"
+                className="bg-white dark:bg-dark-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-gray-100 dark:border-dark-border h-full flex flex-col"
               >
                 <div className="relative h-48">
                   <Image
@@ -209,31 +209,48 @@ export default function NewsEventsPage() {
                     fill
                     className="object-cover"
                   />
-                  <div className="absolute top-4 right-4 bg-ukblue text-white text-xs px-3 py-1 rounded-full">
+                  <div className="absolute top-3 right-3 bg-ukblue text-white text-xs px-3 py-1 rounded-full">
                     {event.category}
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-14 h-14 bg-silver-50 rounded-lg flex flex-col items-center justify-center text-ukblue">
-                      <span className="text-sm font-bold">{new Date(event.date).toLocaleString('default', { month: 'short' })}</span>
-                      <span className="text-lg font-bold">{new Date(event.date).getDate()}</span>
+                <div className="flex-grow p-6">
+                  <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 mb-2">{event.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{event.description}</p>
+                  <div className="mt-auto space-y-2">
+                    <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                      <FaCalendarAlt className="mr-2 text-ukblue dark:text-ukblue-lighter" />
+                      <span>{new Date(event.date).toLocaleDateString('en-US', { 
+                        month: 'long', 
+                        day: 'numeric', 
+                        year: 'numeric' 
+                      })}</span>
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2 text-gray-500 text-sm">
-                        <FaClock size={12} />
-                        <span>{event.time}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-500 text-sm mt-1">
-                        <FaMapMarkerAlt size={12} />
-                        <span>{event.location}</span>
-                      </div>
+                    <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                      <FaClock className="mr-2 text-ukblue dark:text-ukblue-lighter" />
+                      <span>{new Date(event.date).toLocaleTimeString('en-US', { 
+                        hour: 'numeric', 
+                        minute: '2-digit',
+                        hour12: true
+                      })} - {new Date(event.endDate).toLocaleTimeString('en-US', { 
+                        hour: 'numeric', 
+                        minute: '2-digit',
+                        hour12: true
+                      })}</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                      <FaMapMarkerAlt className="mr-2 text-ukblue dark:text-ukblue-lighter" />
+                      <span>{event.location}</span>
                     </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">{event.title}</h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{event.description}</p>
-                  <Button variant="outline" href={`/events/${event.id}`} className="w-full">
-                    View Details
+                </div>
+                <div className="bg-gray-50 dark:bg-dark-card-hover p-4 border-t border-gray-100 dark:border-dark-border">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    href={`/events/${event.id}`}
+                    className="text-ukblue dark:text-ukblue-lighter w-full justify-center"
+                  >
+                    Event Details
                   </Button>
                 </div>
               </motion.div>
@@ -257,88 +274,98 @@ export default function NewsEventsPage() {
       <Section
         id="news"
         title="Latest News"
-        subtitle="Stay updated with the latest developments at Royal Academy UK"
+        subtitle="Stay informed about the latest happenings at Greenwich"
       >
-        {filteredNews.length > 0 ? (
-          <>
-            {/* Featured News Item */}
-            <div className="mb-12">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white rounded-xl overflow-hidden shadow-md">
-                <div className="relative h-64 lg:h-auto">
-                  <Image
-                    src={news[0].image}
-                    alt={news[0].title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-8 flex flex-col justify-center">
-                  <span className="inline-block px-3 py-1 text-xs font-medium tracking-wider uppercase rounded-full bg-gold-100 text-gold-800 mb-4">
-                    Featured News
-                  </span>
-                  <div className="flex items-center text-gray-500 text-sm mb-2">
-                    <FaCalendarAlt className="mr-2" />
-                    {news[0].date} | <FaNewspaper className="mx-2" /> {news[0].source}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredNews.map((item, index) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="bg-white dark:bg-dark-card rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-gray-100 dark:border-dark-border h-full flex flex-col"
+            >
+              <div className="relative h-48">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  fill
+                  className="object-cover"
+                />
+                {item.featured && (
+                  <div className="absolute top-3 left-3 bg-gold-400 text-white text-xs px-3 py-1 rounded-full">
+                    Featured
                   </div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-4">{news[0].title}</h2>
-                  <p className="text-gray-600 mb-6">{news[0].summary}</p>
-                  <Button variant="primary" href={`/news/${news[0].id}`}>
-                    Read Full Story
-                  </Button>
+                )}
+                <div className="absolute top-3 right-3 bg-ukblue text-white text-xs px-3 py-1 rounded-full">
+                  {item.category}
                 </div>
               </div>
-            </div>
-
-            {/* Other News Items */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {filteredNews.slice(1).map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
+              <div className="flex-grow p-6">
+                <h3 className="font-bold text-xl text-gray-800 dark:text-gray-100 mb-2">{item.title}</h3>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">{item.summary}</p>
+                <div className="mt-auto flex items-center text-sm text-gray-500 dark:text-gray-400">
+                  <FaCalendarAlt className="mr-2 text-ukblue dark:text-ukblue-lighter" />
+                  <span>{new Date(item.date).toLocaleDateString('en-US', { 
+                    month: 'long', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                  })}</span>
+                </div>
+              </div>
+              <div className="bg-gray-50 dark:bg-dark-card-hover p-4 border-t border-gray-100 dark:border-dark-border">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  href={`/news/${item.id}`}
+                  className="text-ukblue dark:text-ukblue-lighter w-full justify-center"
                 >
-                  <Card
-                    title={item.title}
-                    description={item.summary}
-                    imageSrc={item.image}
-                    imageAlt={item.title}
-                    href={`/news/${item.id}`}
-                    variant="bordered"
-                    footer={
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>{item.date}</span>
-                        <span>{item.source}</span>
-                      </div>
-                    }
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </>
-        ) : (
-          <div className="text-center py-12 bg-white rounded-lg shadow-sm">
-            <div className="text-4xl mb-4">📰</div>
-            <h3 className="text-xl font-semibold mb-2">No news found</h3>
-            <p className="text-gray-600 mb-6">
-              We couldn't find any news matching your search. Try a different search term.
-            </p>
-            <Button onClick={() => setSearchTerm("")} variant="primary">
-              Clear Search
-            </Button>
+                  Read More
+                </Button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Academy Achievements */}
+      <Section
+        title="Academy Achievements"
+        subtitle="Recent highlights and accomplishments of Greenwich"
+        background="dark"
+        className="py-16"
+      >
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {achievements.map((achievement, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center"
+              >
+                <div className="flex justify-center mb-4">
+                  {achievement.icon}
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">{achievement.title}</h3>
+                <p className="text-silver-300">{achievement.description}</p>
+              </motion.div>
+            ))}
           </div>
-        )}
+        </div>
       </Section>
 
       {/* Subscribe to Newsletter */}
-      <Section background="ukblue">
+      <Section background="dark">
         <div className="max-w-3xl mx-auto text-center">
           <div className="mb-8">
             <FaNewspaper className="text-gold-400 text-5xl mx-auto mb-6" />
             <h2 className="text-3xl font-bold text-white mb-4">Subscribe to Our Newsletter</h2>
             <p className="text-silver-300 mb-8">
-              Stay informed about upcoming events, latest news, and exclusive updates from Royal Academy UK.
+              Stay informed about upcoming events, latest news, and exclusive updates from Greenwich.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
               <input
@@ -353,40 +380,6 @@ export default function NewsEventsPage() {
           </div>
         </div>
       </Section>
-
-      {/* Academy Achievements */}
-      <Section
-        title="Academy Achievements"
-        subtitle="Recent highlights and accomplishments of Royal Academy UK"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          {achievements.map((achievement, index) => (
-            <motion.div
-              key={achievement.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className="flex gap-6 bg-white p-6 rounded-lg shadow-sm border border-silver-200"
-            >
-              <div className="flex-shrink-0">
-                <div className="w-14 h-14 bg-gold-100 rounded-lg flex items-center justify-center text-gold-800">
-                  <achievement.icon size={28} />
-                </div>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">{achievement.title}</h3>
-                <p className="text-gray-600 text-sm">{achievement.description}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-        <div className="text-center">
-          <Button variant="outline" href="/about">
-            Learn More About Our Academy
-          </Button>
-        </div>
-      </Section>
     </>
   );
 }
@@ -394,156 +387,134 @@ export default function NewsEventsPage() {
 // Data
 const events = [
   {
-    id: "event-1",
-    title: "Introduction to Digital Marketing Workshop",
-    description: "A comprehensive hands-on workshop covering the fundamentals of digital marketing, including SEO, social media, and content marketing strategies.",
-    date: "2023-06-15",
-    time: "10:00 AM - 2:00 PM",
-    location: "Room 302, Main Building",
-    category: "Workshop",
-    image: "/images/digital-marketing-workshop.jpg"
+    id: "e1",
+    title: "Open Day: Explore Greenwich Campus",
+    description: "Join us for an informative and interactive campus tour. Meet faculty, current students, and explore our facilities.",
+    date: "2023-07-10T10:00:00",
+    endDate: "2023-07-10T15:00:00",
+    location: "Main Campus",
+    category: "Open Day",
+    image: "/images/open-day.jpg",
+    featured: true
   },
   {
-    id: "event-2",
+    id: "e2",
     title: "Business Leadership Seminar",
-    description: "Join industry leaders for an insightful seminar on effective leadership strategies for the modern business environment.",
-    date: "2023-06-22",
-    time: "2:00 PM - 5:00 PM",
-    location: "Conference Hall",
+    description: "A half-day seminar featuring industry leaders sharing insights on emerging business trends and leadership strategies.",
+    date: "2023-07-15T14:00:00",
+    endDate: "2023-07-15T17:30:00",
+    location: "Business School Auditorium",
     category: "Seminar",
     image: "/images/leadership-seminar.jpg"
   },
   {
-    id: "event-3",
-    title: "Summer Open Day 2023",
-    description: "Explore our campus, meet faculty members, and learn about our programs during our annual Summer Open Day event.",
-    date: "2023-07-08",
-    time: "9:00 AM - 4:00 PM",
-    location: "Main Campus",
-    category: "Open Day",
-    image: "/images/open-day.jpg"
+    id: "e3",
+    title: "Annual Graduation Ceremony",
+    description: "Celebrating the achievements of our 2023 graduates with keynote speakers, award presentations, and a reception.",
+    date: "2023-07-20T10:00:00",
+    endDate: "2023-07-20T15:00:00",
+    location: "Main Campus Hall",
+    category: "Ceremony",
+    image: "/images/graduation-ceremony.jpg"
   },
   {
-    id: "event-4",
-    title: "Data Science and AI Conference",
-    description: "A two-day conference featuring keynote speakers, panel discussions, and workshops focused on the latest trends in data science and artificial intelligence.",
-    date: "2023-07-20",
-    time: "9:00 AM - 5:00 PM",
-    location: "Technology Center",
+    id: "e4",
+    title: "Digital Marketing Workshop",
+    description: "Learn the latest digital marketing techniques in this hands-on workshop led by industry professionals.",
+    date: "2023-08-05T09:30:00",
+    endDate: "2023-08-05T16:30:00",
+    location: "Technology Center, Room 305",
+    category: "Workshop",
+    image: "/images/digital-marketing-workshop.jpg"
+  },
+  {
+    id: "e5",
+    title: "International Student Orientation",
+    description: "A special welcome event for our new international students, featuring campus tours, information sessions, and networking opportunities.",
+    date: "2023-08-28T10:00:00",
+    endDate: "2023-08-28T14:00:00",
+    location: "Student Union Building",
+    category: "Orientation",
+    image: "/images/event-1.jpg"
+  },
+  {
+    id: "e6",
+    title: "Research Symposium: Sustainability",
+    description: "A day of presentations and discussions on cutting-edge research in sustainability and environmental sciences.",
+    date: "2023-09-15T09:00:00",
+    endDate: "2023-09-15T17:00:00",
+    location: "Science Building Auditorium",
     category: "Conference",
-    image: "/images/data-science-conference.jpg"
-  },
-  {
-    id: "event-5",
-    title: "Future of Education Webinar",
-    description: "An online discussion about emerging trends, challenges, and innovations in education with experts from around the world.",
-    date: "2023-06-30",
-    time: "7:00 PM - 8:30 PM",
-    location: "Online (Zoom)",
-    category: "Webinar",
-    image: "/images/education-webinar.jpg"
-  },
-  {
-    id: "event-6",
-    title: "Healthcare Innovation Summit",
-    description: "Explore cutting-edge innovations in healthcare management, patient care, and medical technology at this comprehensive summit.",
-    date: "2023-08-05",
-    time: "10:00 AM - 4:00 PM",
-    location: "Health Sciences Building",
-    category: "Conference",
-    image: "/images/healthcare-summit.jpg"
+    image: "/images/event-2.jpg"
   }
 ];
 
 const news = [
   {
-    id: "news-1",
-    title: "Royal Academy UK Ranks Among Top 20 Educational Institutions in the UK",
-    summary: "In the latest national rankings, Royal Academy UK has been recognized as one of the top 20 educational institutions in the country, highlighting our commitment to excellence in education and student outcomes.",
-    content: "",
-    date: "May 10, 2023",
-    source: "Education Weekly",
-    image: "/images/news-rankings.jpg"
+    id: "n1",
+    title: "Greenwich Achieves Top 50 Ranking in Global Education Index",
+    summary: "We're proud to announce that Greenwich has been recognized among the top 50 institutions worldwide in the latest Global Education Index.",
+    date: "2023-06-15",
+    category: "Achievements",
+    image: "/images/classroom.jpg",
+    featured: true
   },
   {
-    id: "news-2",
-    title: "New Partnership with Global Tech Company to Enhance Student Opportunities",
-    summary: "Royal Academy UK has established a strategic partnership with a leading global technology company to provide enhanced internship and employment opportunities for students.",
-    content: "",
-    date: "April 28, 2023",
-    source: "Tech Insider",
-    image: "/images/news-partnership.jpg"
+    id: "n2",
+    title: "New AI Research Center Opening in Fall 2023",
+    summary: "Greenwich is launching a state-of-the-art AI Research Center this fall, thanks to a £5 million investment and partnerships with leading tech companies.",
+    date: "2023-06-08",
+    category: "Research",
+    image: "/images/data-science.jpg"
   },
   {
-    id: "news-3",
-    title: "Academy Launches New Scholarship Program for International Students",
-    summary: "A new scholarship program has been launched to support talented international students pursuing their education at Royal Academy UK, promoting diversity and global perspectives.",
-    content: "",
-    date: "April 15, 2023",
-    source: "Education Times",
-    image: "/images/news-scholarship.jpg"
+    id: "n3",
+    title: "Faculty Member Wins Prestigious Research Award",
+    summary: "Professor Sarah Chen from our Computer Science department has been awarded the prestigious Innovation in Technology Award for her work on sustainable computing solutions.",
+    date: "2023-05-22",
+    category: "Faculty",
+    image: "/images/academic-director.jpg"
   },
   {
-    id: "news-4",
-    title: "Royal Academy UK Students Win National Business Competition",
-    summary: "A team of business students from Royal Academy UK has won the prestigious National Business Innovation Challenge, showcasing their entrepreneurial skills and innovative thinking.",
-    content: "",
-    date: "March 22, 2023",
-    source: "Business Journal",
-    image: "/images/news-competition.jpg"
+    id: "n4",
+    title: "International Scholarship Program Expanded",
+    summary: "Greenwich is expanding its international scholarship offerings, with 50 new fully-funded positions available for the upcoming academic year.",
+    date: "2023-05-10",
+    category: "Admissions",
+    image: "/images/event-3.jpg"
   },
   {
-    id: "news-5",
-    title: "Academy Expands Campus with New State-of-the-Art Technology Center",
-    summary: "Royal Academy UK has unveiled plans for a new state-of-the-art technology center, expanding our campus facilities to enhance learning experiences in tech-related disciplines.",
-    content: "",
-    date: "March 10, 2023",
-    source: "Construction Today",
-    image: "/images/news-expansion.jpg"
+    id: "n5",
+    title: "Greenwich Students Win National Business Competition",
+    summary: "A team of five MBA students from Greenwich took first place in the National Business Strategy Competition, beating teams from 30 other top institutions.",
+    date: "2023-04-28",
+    category: "Student Success",
+    image: "/images/business.jpg"
   },
   {
-    id: "news-6",
-    title: "Faculty Member Receives Recognition for Research Excellence",
-    summary: "Professor Elizabeth Mitchell, Academic Director at Royal Academy UK, has been awarded the prestigious Research Excellence Award for her contributions to educational methodology.",
-    content: "",
-    date: "February 28, 2023",
-    source: "Academic Review",
-    image: "/images/news-faculty.jpg"
-  },
-  {
-    id: "news-7",
-    title: "Royal Academy UK Hosts International Education Conference",
-    summary: "Last week, our institution successfully hosted the International Education Innovation Conference, bringing together educators and researchers from over 30 countries.",
-    content: "",
-    date: "February 15, 2023",
-    source: "Global Education",
-    image: "/images/news-conference.jpg"
+    id: "n6",
+    title: "New Sustainable Campus Initiative Launched",
+    summary: "Greenwich has launched a comprehensive sustainability initiative aimed at achieving carbon neutrality by 2030 and implementing eco-friendly practices across all campus operations.",
+    date: "2023-04-15",
+    category: "Campus",
+    image: "/images/campus.jpg"
   }
 ];
 
 const achievements = [
   {
-    id: "achievement-1",
-    icon: FaAward,
-    title: "Excellence in Teaching Award 2023",
-    description: "Royal Academy UK received the prestigious Excellence in Teaching Award from the Higher Education Council for our innovative teaching methodologies."
+    title: "Top 50 Global Ranking",
+    description: "Recognized among the world's leading educational institutions",
+    icon: <FaAward className="h-12 w-12 text-gold" />
   },
   {
-    id: "achievement-2",
-    icon: FaGraduationCap,
-    title: "95% Graduate Employment Rate",
-    description: "Our latest graduate survey revealed a 95% employment rate within six months of graduation, placing us among the top institutions for career outcomes."
+    title: "95% Graduate Employment",
+    description: "Our graduates secure positions within 6 months of graduation",
+    icon: <FaGraduationCap className="h-12 w-12 text-gold" />
   },
   {
-    id: "achievement-3",
-    icon: FaUsers,
-    title: "Global Alumni Network Expansion",
-    description: "Our alumni network has expanded to over 100 countries, creating a truly global community of Royal Academy UK graduates."
-  },
-  {
-    id: "achievement-4",
-    icon: FaNewspaper,
-    title: "Research Publications Milestone",
-    description: "Our faculty members have published over 500 research papers in leading academic journals during the past academic year."
+    title: "25,000+ Alumni Network",
+    description: "A global community of successful Greenwich graduates",
+    icon: <FaUsers className="h-12 w-12 text-gold" />
   }
 ]; 

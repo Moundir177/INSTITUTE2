@@ -3,27 +3,84 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FaCalendarAlt, FaFileAlt, FaGraduationCap, FaUsers, FaCheckCircle } from "react-icons/fa";
+import { FaCalendarAlt, FaFileAlt, FaGraduationCap, FaUsers, FaCheckCircle, FaUniversity, FaGlobe } from "react-icons/fa";
 import { Hero } from "@/components/ui/Hero";
 import { Section } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { ShinyText } from "@/components/ui/ShinyText";
+import { useTranslation } from '@/hooks/useTranslation';
 
 export default function AdmissionsPage() {
+  const { t, isRTL } = useTranslation();
   const [activeTab, setActiveTab] = useState<'undergraduate'|'graduate'|'international'>('undergraduate');
   
+  // Admission steps
+  const admissionSteps = [
+    {
+      title: "Research Programs",
+      description: "Explore our range of undergraduate, postgraduate, and professional programs to find the right fit for your academic and career goals.",
+      icon: <FaUniversity className="w-6 h-6 text-white" />
+    },
+    {
+      title: "Check Requirements",
+      description: "Review the academic, language, and other requirements for your chosen program to ensure you meet the eligibility criteria.",
+      icon: <FaCheckCircle className="w-6 h-6 text-white" />
+    },
+    {
+      title: "Prepare Documents",
+      description: "Gather all required documents, including academic transcripts, recommendation letters, personal statement, and proof of language proficiency.",
+      icon: <FaFileAlt className="w-6 h-6 text-white" />
+    },
+    {
+      title: "Submit Application",
+      description: "Complete and submit your application through our online portal before the relevant deadline for your chosen intake.",
+      icon: <FaGraduationCap className="w-6 h-6 text-white" />
+    },
+    {
+      title: "Interview (if required)",
+      description: "Some programs require an interview or additional assessment. Prepare thoroughly if you're invited to this stage.",
+      icon: <FaGlobe className="w-6 h-6 text-white" />
+    }
+  ];
+  
+  // Key dates
+  const keyDates = [
+    {
+      title: "Undergraduate Applications",
+      dates: [
+        { term: "Fall 2024", deadline: "March 31, 2024" },
+        { term: "Spring 2025", deadline: "October 31, 2024" }
+      ]
+    },
+    {
+      title: "Postgraduate Applications",
+      dates: [
+        { term: "Fall 2024", deadline: "May 31, 2024" },
+        { term: "Spring 2025", deadline: "November 30, 2024" }
+      ]
+    },
+    {
+      title: "Professional Programs",
+      dates: [
+        { term: "Summer 2024", deadline: "April 15, 2024" },
+        { term: "Fall 2024", deadline: "August 15, 2024" }
+      ]
+    }
+  ];
+
   return (
     <>
       <Hero
         title="Admissions"
-        description="Take the first step toward your future at Royal Academy UK"
-        imageSrc="https://placehold.co/1920x1080/00247d/ffffff?text=Admissions"
-        imageAlt="Students walking on campus"
+        description="Begin your journey at Royal Academy UK and transform your future"
+        imageSrc="/images/admissions-hero.jpg"
+        imageAlt="Students at Royal Academy UK campus"
         primaryButtonText="Apply Now"
-        primaryButtonHref="#apply"
+        primaryButtonHref="/admissions/apply"
         secondaryButtonText="Request Information"
         secondaryButtonHref="/contact"
+        pattern={true}
       />
       
       {/* Why Choose Us */}
@@ -123,9 +180,9 @@ export default function AdmissionsPage() {
           {/* Process Steps */}
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 md:p-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {admissionSteps[activeTab].map((step, index) => (
+              {admissionSteps.map((step, index) => (
                 <div key={index} className="relative">
-                  {index < admissionSteps[activeTab].length - 1 && (
+                  {index < admissionSteps.length - 1 && (
                     <div className="hidden lg:block absolute top-8 left-full w-full h-0.5 bg-silver-500/30 -translate-x-1/2"></div>
                   )}
                   <div className="flex flex-col items-center text-center">
@@ -172,12 +229,12 @@ export default function AdmissionsPage() {
               <div className="p-8">
                 <h3 className="font-bold text-2xl mb-6 text-ukblue">Undergraduate Programs</h3>
                 <div className="space-y-6">
-                  {undergraduateDates.map((date, index) => (
+                  {keyDates[0].dates.map((date, index) => (
                     <div key={index} className="flex">
                       <div className="flex-shrink-0 mr-4">
                         <div className="w-16 h-16 bg-white rounded-lg shadow-sm flex flex-col items-center justify-center text-center">
-                          <span className="text-sm font-medium text-gray-500">{date.month}</span>
-                          <span className="text-lg font-bold text-ukblue">{date.day}</span>
+                          <span className="text-sm font-medium text-gray-500">{date.term}</span>
+                          <span className="text-lg font-bold text-ukblue">{date.deadline}</span>
                         </div>
                       </div>
                       <div>
@@ -192,12 +249,12 @@ export default function AdmissionsPage() {
               <div className="p-8 bg-ukblue text-white">
                 <h3 className="font-bold text-2xl mb-6">Graduate Programs</h3>
                 <div className="space-y-6">
-                  {graduateDates.map((date, index) => (
+                  {keyDates[1].dates.map((date, index) => (
                     <div key={index} className="flex">
                       <div className="flex-shrink-0 mr-4">
                         <div className="w-16 h-16 bg-white rounded-lg shadow-sm flex flex-col items-center justify-center text-center">
-                          <span className="text-sm font-medium text-gray-500">{date.month}</span>
-                          <span className="text-lg font-bold text-ukblue">{date.day}</span>
+                          <span className="text-sm font-medium text-gray-500">{date.term}</span>
+                          <span className="text-lg font-bold text-ukblue">{date.deadline}</span>
                         </div>
                       </div>
                       <div>
@@ -298,63 +355,6 @@ export default function AdmissionsPage() {
 }
 
 // Data
-const admissionSteps = {
-  undergraduate: [
-    {
-      title: "Choose Your Program",
-      description: "Browse our undergraduate programs and identify your preferred area of study"
-    },
-    {
-      title: "Prepare Documents",
-      description: "Gather transcripts, test scores, personal statement, and letters of recommendation"
-    },
-    {
-      title: "Submit Application",
-      description: "Complete the online application form and upload all required documents"
-    },
-    {
-      title: "Interview (if required)",
-      description: "Some programs may require an interview as part of the selection process"
-    }
-  ],
-  graduate: [
-    {
-      title: "Research Programs",
-      description: "Explore our graduate offerings and identify faculty whose research interests align with yours"
-    },
-    {
-      title: "Prepare Materials",
-      description: "Gather transcripts, test scores, CV, research proposal, and references"
-    },
-    {
-      title: "Submit Application",
-      description: "Complete the application and upload all required documents by the deadline"
-    },
-    {
-      title: "Interview Process",
-      description: "Shortlisted candidates will be invited for an interview with faculty members"
-    }
-  ],
-  international: [
-    {
-      title: "Check Requirements",
-      description: "Review country-specific requirements and English language proficiency standards"
-    },
-    {
-      title: "Prepare Documents",
-      description: "Gather academic records, standardized test scores, and translated documents"
-    },
-    {
-      title: "Submit Application",
-      description: "Complete the international student application form by the priority deadline"
-    },
-    {
-      title: "Visa Process",
-      description: "Upon acceptance, begin the student visa application process with our guidance"
-    }
-  ]
-};
-
 const undergraduateDates = [
   {
     month: "OCT",

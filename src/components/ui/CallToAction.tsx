@@ -22,7 +22,7 @@ export function CallToAction({
   primaryButtonHref,
   secondaryButtonText,
   secondaryButtonHref,
-  backgroundClassName = "bg-gradient-to-r from-ukblue to-ukblue/80",
+  backgroundClassName = "bg-gradient-to-r from-darkblue to-brand-blue-600",
   className,
 }: CallToActionProps) {
   return (
@@ -44,7 +44,7 @@ export function CallToAction({
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
             viewport={{ once: true }}
-            className="text-silver-200 mb-8 max-w-2xl mx-auto"
+            className="text-lightgray mb-8 max-w-2xl mx-auto"
           >
             {description}
           </motion.p>
@@ -57,9 +57,9 @@ export function CallToAction({
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Button
-              variant="primary"
+              variant="secondary"
               href={primaryButtonHref}
-              className="bg-gold-500 hover:bg-gold-600 min-w-[160px]"
+              className="bg-gold hover:bg-brand-gold-400 min-w-[160px]"
             >
               {primaryButtonText}
             </Button>

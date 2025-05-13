@@ -27,7 +27,7 @@ export function TestimonialCard({
       className={`bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow ${className}`}
     >
       <div className="flex items-start mb-6">
-        <div className="relative w-14 h-14 rounded-full overflow-hidden mr-4 flex-shrink-0 border-2 border-ukblue">
+        <div className="relative w-14 h-14 rounded-full overflow-hidden mr-4 flex-shrink-0 border-2 border-darkblue">
           <Image
             src={image}
             alt={name}
@@ -42,17 +42,17 @@ export function TestimonialCard({
       </div>
       
       <div className="relative">
-        <div className="text-5xl text-ukblue/10 absolute top-0 left-0">"</div>
+        <div className="text-5xl text-darkblue/10 absolute top-0 left-0">"</div>
         <p className="text-gray-600 italic pl-6 pr-6 relative z-10">{quote}</p>
-        <div className="text-5xl text-ukblue/10 absolute bottom-0 right-0">"</div>
+        <div className="text-5xl text-darkblue/10 absolute bottom-0 right-0">"</div>
       </div>
       
-      <div className="mt-4 pt-4 border-t border-silver-200">
+      <div className="mt-4 pt-4 border-t border-brand-gray-200">
         <div className="flex space-x-1">
           {[1, 2, 3, 4, 5].map((star) => (
             <svg 
               key={star} 
-              className="w-4 h-4 text-gold-500" 
+              className="w-4 h-4 text-gold" 
               fill="currentColor" 
               viewBox="0 0 20 20"
             >
